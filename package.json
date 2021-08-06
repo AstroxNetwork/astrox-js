@@ -4,7 +4,6 @@
   "private": true,
   "description": "Use an Agent to interact with the Internet Computer from your JavaScript program.",
   "dependencies": {
-    "@astrox/agent": "^0.9.0",
     "@types/jest": "^26.0.22",
     "jest": "^26.6.3",
     "jest-cli": "^26.6.3",
@@ -13,7 +12,6 @@
   "workspaces": {
     "packages": [
       "packages/agent",
-      "packages/auth-client",
       "e2e/node"
     ]
   },
