@@ -25,7 +25,7 @@ jobs:
       - run: npm install
       # set up git since we will later push to the repo
       - run: git config --global user.name "GitHub CD bot"
-      - run: git config --global user.email "npm@dfinity.org"
+      - run: git config --global user.email "npm@astrox.org"
       # build the project
       - run: npm run build --workspaces
       # run tests just in case

@@ -10,7 +10,6 @@
     "internet-computer",
     "ic",
     "dfinity",
-    "astrox",
     "agent",
     "actor",
     "dfx",
@@ -34,20 +33,21 @@
     "eslint:fix": "npm run lint -- --fix",
     "eslint": "eslint --ext '.js,.jsx,.ts,.tsx' src/index.ts src/auth.ts src/request_id.ts src/request_id.test.ts",
     "lint": "npm run eslint",
-    "make:docs/reference": "typedoc src/index.ts --out docs/reference --excludeInternal",
+    "make:docs/reference": "typedoc src/index.ts --out ../../docs/generated/agent --excludeInternal",
     "release": "npm publish",
     "test": "jest --verbose",
     "test:coverage": "jest --verbose --collectCoverage",
     "tslint:fix": "npm run lint -- --fix",
     "tslint": "tslint --project tsconfig.json --config tslint.json"
   },
-  "peerDependencies": {},
+  "peerDependencies": {
+    "@astrox/candid": "^0.0.0",
+    "@astrox/principal": "^0.0.0"
+  },
   "dependencies": {
     "base64-arraybuffer": "^0.2.0",
     "bignumber.js": "^9.0.0",
     "borc": "^2.1.1",
-    "buffer": "^6.0.3",
-    "buffer-pipe": "^0.0.4",
     "js-sha256": "0.9.0",
     "simple-cbor": "^0.4.1"
   },

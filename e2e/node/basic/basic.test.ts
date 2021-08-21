@@ -1,6 +1,6 @@
-import { Certificate, getManagementCanister } from '@dfinity/agent';
-import { blobFromText, IDL } from '@dfinity/candid';
-import { Principal } from '@dfinity/principal';
+import { Certificate, getManagementCanister } from '@astrox/agent';
+import { blobFromText, IDL } from '@astrox/candid';
+import { Principal } from '@astrox/principal';
 import agent from '../utils/agent';
 import { Buffer } from 'buffer/';
 

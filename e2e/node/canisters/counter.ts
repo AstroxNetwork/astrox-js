@@ -1,6 +1,6 @@
-import { Actor } from '@dfinity/agent';
-import { blobFromUint8Array, IDL } from '@dfinity/candid';
-import { Principal } from '@dfinity/principal';
+import { Actor } from '@astrox/agent';
+import { blobFromUint8Array, IDL } from '@astrox/candid';
+import { Principal } from '@astrox/principal';
 import { readFileSync } from 'fs';
 import path from 'path';
 import agent from '../utils/agent';

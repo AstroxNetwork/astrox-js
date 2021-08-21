@@ -46,7 +46,7 @@ Then, when you have merged the new versions, open https://github.com/dfinity/age
 
 ### Publishing Docs
 
-Until we have an internal process and centrally owned canister, docs can be released manually for `@dfinity/agent` and `@dfinity/authentication`.
+Until we have an internal process and centrally owned canister, docs can be released manually for `@astrox/agent` and `@astrox/authentication`.
 
 - Start from a fresh clone (or `git clean -dfx .`)
 - `npm install`

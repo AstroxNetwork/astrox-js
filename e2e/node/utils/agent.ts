@@ -1,5 +1,5 @@
-import { HttpAgent, makeNonceTransform } from '@dfinity/agent';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { HttpAgent, makeNonceTransform } from '@astrox/agent';
+import { Ed25519KeyIdentity } from '@astrox/identity';
 
 const identity = Ed25519KeyIdentity.generate();
 export const principal = identity.getPrincipal();

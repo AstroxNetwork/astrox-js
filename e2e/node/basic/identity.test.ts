@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Actor, HttpAgent, SignIdentity } from '@dfinity/agent';
-import { IDL } from '@dfinity/candid';
-import { Principal } from '@dfinity/principal';
-import { DelegationChain, DelegationIdentity, Ed25519KeyIdentity } from '@dfinity/identity';
+import { Actor, HttpAgent, SignIdentity } from '@astrox/agent';
+import { IDL } from '@astrox/candid';
+import { Principal } from '@astrox/principal';
+import { DelegationChain, DelegationIdentity, Ed25519KeyIdentity } from '@astrox/identity';
 import agent from '../utils/agent';
 import identityCanister from '../canisters/identity';
 

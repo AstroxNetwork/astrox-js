@@ -817,7 +817,7 @@
     "exec-sh" "^0.3.2"
     "minimist" "^1.2.0"
 
-"@dfinity/agent@^0.9.0", "@dfinity/agent@file:/Users/suwei/dev/agent-js/packages/agent":
+"@astrox/agent@^0.9.0", "@astrox/agent@file:/Users/suwei/dev/agent-js/packages/agent":
   "resolved" "file:packages/agent"
   "version" "0.9.0"
   dependencies:
@@ -829,22 +829,22 @@
     "js-sha256" "0.9.0"
     "simple-cbor" "^0.4.1"
 
-"@dfinity/auth-client@^0.9.0", "@dfinity/auth-client@file:/Users/suwei/dev/agent-js/packages/auth-client":
+"@astrox/auth-client@^0.9.0", "@astrox/auth-client@file:/Users/suwei/dev/agent-js/packages/auth-client":
   "resolved" "file:packages/auth-client"
   "version" "0.9.0"
 
-"@dfinity/authentication@^0.9.0", "@dfinity/authentication@file:/Users/suwei/dev/agent-js/packages/authentication":
+"@astrox/authentication@^0.9.0", "@astrox/authentication@file:/Users/suwei/dev/agent-js/packages/authentication":
   "resolved" "file:packages/authentication"
   "version" "0.9.0"
 
-"@dfinity/candid@^0.9.0", "@dfinity/candid@file:/Users/suwei/dev/agent-js/packages/candid":
+"@astrox/candid@^0.9.0", "@astrox/candid@file:/Users/suwei/dev/agent-js/packages/candid":
   "resolved" "file:packages/candid"
   "version" "0.9.0"
   dependencies:
     "buffer" "^6.0.3"
     "buffer-pipe" "^0.0.4"
 
-"@dfinity/identity-ledgerhq@^0.9.0", "@dfinity/identity-ledgerhq@file:/Users/suwei/dev/agent-js/packages/identity-ledgerhq":
+"@astrox/identity-ledgerhq@^0.9.0", "@astrox/identity-ledgerhq@file:/Users/suwei/dev/agent-js/packages/identity-ledgerhq":
   "resolved" "file:packages/identity-ledgerhq"
   "version" "0.9.0"
   dependencies:
@@ -852,7 +852,7 @@
     "@ledgerhq/hw-transport-webusb" "^5.49.0"
     "@zondax/ledger-dfinity" "0.2.1"
 
-"@dfinity/identity@^0.9.0", "@dfinity/identity@file:/Users/suwei/dev/agent-js/packages/identity":
+"@astrox/identity@^0.9.0", "@astrox/identity@file:/Users/suwei/dev/agent-js/packages/identity":
   "resolved" "file:packages/identity"
   "version" "0.9.0"
   dependencies:
@@ -861,7 +861,7 @@
     "buffer-pipe" "0.0.4"
     "tweetnacl" "^1.0.1"
 
-"@dfinity/principal@^0.9.0", "@dfinity/principal@file:/Users/suwei/dev/agent-js/packages/principal":
+"@astrox/principal@^0.9.0", "@astrox/principal@file:/Users/suwei/dev/agent-js/packages/principal":
   "resolved" "file:packages/principal"
   "version" "0.9.0"
 
@@ -4025,11 +4025,11 @@
   "resolved" "file:devTest"
   "version" "1.0.0"
   dependencies:
-    "@dfinity/agent" "^0.9.0"
-    "@dfinity/auth-client" "^0.9.0"
-    "@dfinity/authentication" "^0.9.0"
-    "@dfinity/identity" "^0.9.0"
-    "@dfinity/principal" "^0.9.0"
+    "@astrox/agent" "^0.9.0"
+    "@astrox/auth-client" "^0.9.0"
+    "@astrox/authentication" "^0.9.0"
+    "@astrox/identity" "^0.9.0"
+    "@astrox/principal" "^0.9.0"
 
 "dezalgo@^1.0.0":
   "integrity" "sha1-f3Qt4Gb8dIvI24IFad3c5Jvw1FY="
@@ -5416,11 +5416,11 @@
   "resolved" "file:demos/ledgerhq"
   "version" "0.9.0"
   dependencies:
-    "@dfinity/agent" "^0.9.0"
-    "@dfinity/authentication" "^0.9.0"
-    "@dfinity/identity" "^0.9.0"
-    "@dfinity/identity-ledgerhq" "^0.9.0"
-    "@dfinity/principal" "^0.9.0"
+    "@astrox/agent" "^0.9.0"
+    "@astrox/authentication" "^0.9.0"
+    "@astrox/identity" "^0.9.0"
+    "@astrox/identity-ledgerhq" "^0.9.0"
+    "@astrox/principal" "^0.9.0"
     "assert" "^2.0.0"
     "buffer" "^6.0.3"
     "events" "^3.2.0"
@@ -5437,11 +5437,11 @@
   "resolved" "file:demos/sample-javascript"
   "version" "0.9.0"
   dependencies:
-    "@dfinity/agent" "^0.9.0"
-    "@dfinity/auth-client" "^0.9.0"
-    "@dfinity/authentication" "^0.9.0"
-    "@dfinity/identity" "^0.9.0"
-    "@dfinity/principal" "^0.9.0"
+    "@astrox/agent" "^0.9.0"
+    "@astrox/auth-client" "^0.9.0"
+    "@astrox/authentication" "^0.9.0"
+    "@astrox/identity" "^0.9.0"
+    "@astrox/principal" "^0.9.0"
     "assert" "^2.0.0"
     "buffer" "^6.0.3"
     "events" "^3.2.0"
@@ -5457,7 +5457,7 @@
   "resolved" "file:apps/sw-cert"
   "version" "0.9.0"
   dependencies:
-    "@dfinity/agent" "^0.9.0"
+    "@astrox/agent" "^0.9.0"
     "@types/pako" "^1.0.1"
     "assert" "^2.0.0"
     "base64-arraybuffer" "^0.2.0"
@@ -9091,10 +9091,10 @@
   "resolved" "https://registry.npmjs.org/shellwords/-/shellwords-0.1.1.tgz"
   "version" "0.1.1"
 
-"shiki@^0.9.3":
+"shiki@^0.0.0":
   "integrity" "sha512-NEjg1mVbAUrzRv2eIcUt3TG7X9svX7l3n3F5/3OdFq+/BxUdmBOeKGiH4icZJBLHy354Shnj6sfBTemea2e7XA=="
-  "resolved" "https://registry.npmjs.org/shiki/-/shiki-0.9.3.tgz"
-  "version" "0.9.3"
+  "resolved" "https://registry.npmjs.org/shiki/-/shiki-0.0.0.tgz"
+  "version" "0.0.0"
   dependencies:
     "onigasm" "^2.2.5"
     "vscode-textmate" "^5.2.0"
@@ -10032,7 +10032,7 @@
     "minimatch" "^3.0.0"
     "progress" "^2.0.3"
     "shelljs" "^0.8.4"
-    "shiki" "^0.9.3"
+    "shiki" "^0.0.0"
     "typedoc-default-themes" "^0.12.10"
 
 "typescript@*", "typescript@^3.6.3", "typescript@>=2.1.0 || >=2.1.0-dev || >=2.2.0-dev || >=2.3.0-dev || >=2.4.0-dev || >=2.5.0-dev || >=2.6.0-dev || >=2.7.0-dev || >=2.8.0-dev || >=2.9.0-dev || >= 3.0.0-dev || >= 3.1.0-dev", "typescript@>=2.3.0-dev || >=2.4.0-dev || >=2.5.0-dev || >=2.6.0-dev || >=2.7.0-dev || >=2.8.0-dev || >=2.9.0-dev || >=3.0.0-dev || >= 3.1.0-dev || >= 3.2.0-dev", "typescript@>=2.7", "typescript@>=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta", "typescript@>=3.8 <5.0", "typescript@3.9.x || 4.0.x || 4.1.x || 4.2.x":
