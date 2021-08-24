@@ -4,7 +4,7 @@
   "author": "AstroX Network",
   "license": "Apache-2.0",
   "description": "JavaScript and TypeScript library to interact with the Internet Computer",
-  "homepage": "https://sdk.dfinity.org/docs/index.html",
+  "homepage": "https://github.com/AstroxNetwork/astrox-js",
   "keywords": [
     "internet computer",
     "internet-computer",
@@ -40,11 +40,9 @@
     "tslint:fix": "npm run lint -- --fix",
     "tslint": "tslint --project tsconfig.json --config tslint.json"
   },
-  "peerDependencies": {
-    "@astrox/candid": "^0.0.0",
-    "@astrox/principal": "^0.0.0"
-  },
   "dependencies": {
+    "@astrox/candid": "^0.0.0",
+    "@astrox/principal": "^0.0.0",
     "base64-arraybuffer": "^0.2.0",
     "bignumber.js": "^9.0.0",
     "borc": "^2.1.1",

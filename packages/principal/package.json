@@ -4,7 +4,7 @@
   "author": "DFINITY Stiftung <sdk@astrox.org>",
   "license": "Apache-2.0",
   "description": "JavaScript and TypeScript library to work with Internet Computer principals",
-  "homepage": "https://sdk.dfinity.org/docs/index.html",
+  "homepage": "https://github.com/AstroxNetwork/astrox-js",
   "keywords": [
     "internet computer",
     "ic",

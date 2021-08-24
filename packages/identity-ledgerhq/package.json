@@ -4,7 +4,7 @@
   "author": "DFINITY Stiftung <sdk@astrox.org>",
   "license": "Apache-2.0",
   "description": "JavaScript and TypeScript library to manage identity and authentication with the Internet Computer",
-  "homepage": "https://sdk.dfinity.org/docs/index.html",
+  "homepage": "https://github.com/AstroxNetwork/astrox-js",
   "keywords": [
     "internet computer",
     "ic",
@@ -38,12 +38,10 @@
     "test": "jest",
     "test:coverage": "jest --verbose --collectCoverage"
   },
-  "peerDependencies": {
+  "dependencies": {
     "@astrox/agent": "^0.0.0",
     "@astrox/identity": "^0.0.0",
-    "@astrox/principal": "^0.0.0"
-  },
-  "dependencies": {
+    "@astrox/principal": "^0.0.0",
     "@ledgerhq/hw-transport": "^5.49.0",
     "@ledgerhq/hw-transport-webhid": "^5.49.0",
     "@zondax/ledger-dfinity": "0.2.1",

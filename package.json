@@ -17,8 +17,7 @@
       "packages/identity",
       "packages/identity-ledgerhq",
       "packages/authentication",
-      "packages/auth-client",
-      "e2e/node"
+      "packages/auth-client"
     ]
   },
   "devDependencies": {
@@ -40,7 +39,7 @@
     "typescript": "^3.6.3"
   },
   "engines": {
-    "node": "^12 || ^14",
+    "node": ">=12",
     "npm": "^7"
   },
   "scripts": {

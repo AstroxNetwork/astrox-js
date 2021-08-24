@@ -18,6 +18,11 @@ import { IDL } from '@astrox/candid';
 export * as Cbor from './cbor';
 
 export interface GlobalInternetComputer {
+  kraken:{
+    methodChannel:{
+      invokeMethod:(method:string,...args:any[])=>Promise<any>,
+    }
+  };
   ic: {
     agent: Agent;
     HttpAgent: typeof HttpAgent;

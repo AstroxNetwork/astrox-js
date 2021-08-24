@@ -8,7 +8,7 @@
     "rootDir": "."
   },
   "files": [],
-  "references": [{ "path": "packages/agent" }],
+  "references": [{ "path": "packages/agent" },{ "path": "packages/auth-client" },{ "path": "packages/authentication" },{ "path": "packages/candid" },{ "path": "packages/identity" },{ "path": "packages/identity-ledgerhq" },{ "path": "packages/principal" }],
   "include": ["packages/**/types/*"],
   "resolveJsonModule": true
 }

@@ -1,5 +1,5 @@
 {
   "packages": ["e2e/*", "packages/*"],
-  "hoist": true,
+  "hoist": false,
   "version": "0.0.0"
 }
