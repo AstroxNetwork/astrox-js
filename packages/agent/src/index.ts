@@ -10,18 +10,19 @@ export * from './canisters/asset';
 export * from './canisters/management';
 export * from './request_id';
 export * from './utils/bls';
+export * from './utils/buffer';
 export * as polling from './polling';
 
-import { Agent, HttpAgent } from './agent';
 import { IDL } from '@astrox/candid';
+import { Agent, HttpAgent } from './agent';
 
 export * as Cbor from './cbor';
 
 export interface GlobalInternetComputer {
-  kraken:{
-    methodChannel:{
-      invokeMethod:(method:string,...args:any[])=>Promise<any>,
-    }
+  kraken: {
+    methodChannel: {
+      invokeMethod: (method: string, ...args: any[]) => Promise<any>;
+    };
   };
   ic: {
     agent: Agent;

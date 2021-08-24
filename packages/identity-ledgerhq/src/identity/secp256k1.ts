@@ -40,7 +40,7 @@ export class Secp256k1PublicKey implements PublicKey {
     0x00, // no padding
   ]);
 
-  private static derEncode(publicKey: ArrayBuffer): DerEncodedPublicKey {
+  public static derEncode(publicKey: ArrayBuffer): DerEncodedPublicKey {
     if (publicKey.byteLength !== Secp256k1PublicKey.RAW_KEY_LENGTH) {
       const bl = publicKey.byteLength;
       throw new TypeError(
@@ -56,7 +56,7 @@ export class Secp256k1PublicKey implements PublicKey {
     return derPublicKey.buffer as DerEncodedPublicKey;
   }
 
-  private static derDecode(key: DerEncodedPublicKey): ArrayBuffer {
+  public static derDecode(key: DerEncodedPublicKey): ArrayBuffer {
     const expectedLength = Secp256k1PublicKey.DER_PREFIX.length + Secp256k1PublicKey.RAW_KEY_LENGTH;
     if (key.byteLength !== expectedLength) {
       const bl = key.byteLength;

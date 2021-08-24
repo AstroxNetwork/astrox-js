@@ -45,7 +45,7 @@
   "scripts": {
     "lint:e2e": "eslint --cache --cache-location node_modules/.cache/eslint 'e2e/*/**/*.ts*'",
     "publish:release": "npm run publish --workspaces",
-    "build": "",
+    "build": "lerna run build",
     "lint:fix": "",
     "make:docs/reference": "",
     "test:coverage": "",

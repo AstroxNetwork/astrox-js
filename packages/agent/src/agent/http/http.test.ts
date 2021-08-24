@@ -195,13 +195,13 @@ test('use anonymous principal if unspecified', async () => {
 
 describe('getDefaultFetch', () => {
   it('should throw error for defaultFetch with no window or global fetch', () => {
-    delete global.window;
-    delete global.fetch;
+    delete (global as any)?.window;
+    delete (global as any)?.fetch;
     const generateAgent = () => new HttpAgent({ host: 'localhost:8000' });
     expect(generateAgent).toThrow();
   });
   it('should fall back to global.fetch if window is not available', () => {
-    delete global.window;
+    delete (global as any)?.window;
     new HttpAgent({ host: 'localhost:8000' });
   });
 

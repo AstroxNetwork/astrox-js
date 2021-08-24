@@ -116,11 +116,11 @@ test('lookup', () => {
     return new TextEncoder().encode(str);
   }
   expect(Cert.lookup_path([fromText('a'), fromText('a')], tree)).toEqual(undefined);
-  expect(toText(Cert.lookup_path([fromText('a'), fromText('y')], tree))).toEqual('world');
+  expect(toText(Cert.lookup_path([fromText('a'), fromText('y')], tree)!)).toEqual('world');
   expect(Cert.lookup_path([fromText('aa')], tree)).toEqual(undefined);
   expect(Cert.lookup_path([fromText('ax')], tree)).toEqual(undefined);
   expect(Cert.lookup_path([fromText('b')], tree)).toEqual(undefined);
   expect(Cert.lookup_path([fromText('bb')], tree)).toEqual(undefined);
-  expect(toText(Cert.lookup_path([fromText('d')], tree))).toEqual('morning');
+  expect(toText(Cert.lookup_path([fromText('d')], tree)!)).toEqual('morning');
   expect(Cert.lookup_path([fromText('e')], tree)).toEqual(undefined);
 });
