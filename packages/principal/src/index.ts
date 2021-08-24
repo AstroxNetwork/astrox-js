@@ -44,12 +44,10 @@ export class Principal {
 
     let arr = decode(canisterIdNoDash);
     arr = arr.slice(4, arr.length);
-
-    const principal = new this(arr);
+    const principal = new Principal(arr);
     if (principal.toText() !== text) {
       throw new Error(`Principal "${principal.toText()}" does not have a valid checksum.`);
     }
-
     return principal;
   }
 
@@ -75,15 +73,15 @@ export class Principal {
 
   public toText(): string {
     const checksumArrayBuf = new ArrayBuffer(4);
+
     const view = new DataView(checksumArrayBuf);
     view.setUint32(0, getCrc32(this._arr));
     const checksum = new Uint8Array(checksumArrayBuf);
-
     const bytes = Uint8Array.from(this._arr);
-    const array = new Uint8Array([...checksum, ...bytes]);
-
+    const array = Uint8Array.from(Array.from(checksum).concat(Array.from(bytes)));
     const result = encode(array);
     const matches = result.match(/.{1,5}/g);
+
     if (!matches) {
       // This should only happen if there's no character, which is unreachable.
       throw new Error();
