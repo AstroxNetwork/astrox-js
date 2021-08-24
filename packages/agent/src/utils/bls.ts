@@ -16,7 +16,7 @@ export async function blsVerify(
   sig: Uint8Array,
   msg: Uint8Array,
 ): Promise<boolean> {
-  if (!Promise.resolve(verify)) {
+  if (!verify) {
     const kraken = getKraken();
 
     if (!kraken) {
