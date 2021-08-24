@@ -1,6 +1,6 @@
 {
   "name": "@astrox/identity",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "DFINITY Stiftung <sdk@astrox.org>",
   "license": "Apache-2.0",
   "description": "JavaScript and TypeScript library to manage identity with the Internet Computer",
@@ -36,8 +36,8 @@
     "test:coverage": "jest --verbose --collectCoverage"
   },
   "dependencies": {
-    "@astrox/agent": "^0.0.0",
-    "@astrox/principal": "^0.0.0",
+    "@astrox/agent": "^0.0.1",
+    "@astrox/principal": "^0.0.1",
     "borc": "^2.1.1",
     "tweetnacl": "^1.0.1"
   },

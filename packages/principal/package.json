@@ -1,6 +1,6 @@
 {
   "name": "@astrox/principal",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "DFINITY Stiftung <sdk@astrox.org>",
   "license": "Apache-2.0",
   "description": "JavaScript and TypeScript library to work with Internet Computer principals",
