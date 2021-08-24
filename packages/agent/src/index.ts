@@ -18,12 +18,14 @@ import { Agent, HttpAgent } from './agent';
 
 export * as Cbor from './cbor';
 
-export interface GlobalInternetComputer {
-  kraken: {
-    methodChannel: {
-      invokeMethod: (method: string, ...args: any[]) => Promise<any>;
-    };
+export interface Kraken {
+  methodChannel: {
+    invokeMethod: (method: string, ...args: any[]) => Promise<any>;
   };
+}
+
+export interface GlobalInternetComputer {
+  kraken?: Kraken;
   ic: {
     agent: Agent;
     HttpAgent: typeof HttpAgent;

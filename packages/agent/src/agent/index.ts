@@ -1,4 +1,4 @@
-import { GlobalInternetComputer } from '../index';
+import { GlobalInternetComputer, Kraken } from '../index';
 import { Agent } from './api';
 
 export * from './api';
@@ -24,4 +24,17 @@ export function getDefaultAgent(): Agent {
   }
 
   return agent;
+}
+
+export function getKraken(): Kraken | undefined {
+  const kraken =
+    typeof window === 'undefined'
+      ? typeof global === 'undefined'
+        ? typeof self === 'undefined'
+          ? undefined
+          : self.kraken
+        : global.kraken
+      : window.kraken;
+
+  return kraken;
 }

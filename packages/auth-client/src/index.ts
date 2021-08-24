@@ -121,7 +121,6 @@ export class LocalStorage implements AuthClientStorage {
     if (!ls) {
       throw new Error('Could not find local storage.');
     }
-
     return ls;
   }
 }

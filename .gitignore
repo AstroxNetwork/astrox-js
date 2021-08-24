@@ -114,3 +114,7 @@ dist
 .code
 .idea
 .vscode
+
+
+# devTestFolder
+/devTest
