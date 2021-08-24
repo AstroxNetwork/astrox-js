@@ -26,6 +26,9 @@
   ],
   "main": "./lib/cjs/index",
   "module": "./lib/esm/index",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -b && tsc -p tsconfig-cjs.json",
     "build:watch": "tsc -b --watch",
