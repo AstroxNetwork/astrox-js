@@ -55,5 +55,6 @@
     "typedoc": "^0.20.32",
     "typescript": "^4.2.3",
     "whatwg-fetch": "^3.0.0"
-  }
+  },
+  "gitHead": "c4d191116aa0594d509a2e46ae89e8709adf1fad"
 }
