@@ -1,6 +1,6 @@
 {
   "name": "@astrox/js-monorepo",
-  "version": "0.0.0",
+  "version": "0.0.8",
   "private": true,
   "description": "Use an Agent to interact with the Internet Computer from your JavaScript program.",
   "dependencies": {
