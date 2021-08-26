@@ -49,7 +49,7 @@ export function hashTreeToString(tree: HashTree): string {
   function labelToString(label: ArrayBuffer): string {
     const decoder = new TextDecoder(undefined, { fatal: true });
     try {
-      return JSON.stringify(decoder.decode(label));
+      return JSON.stringify(decoder.decode(new Uint8Array(label)));
     } catch (e) {
       return `data(...${label.byteLength} bytes)`;
     }
@@ -210,7 +210,7 @@ export async function reconstruct(t: HashTree): Promise<ArrayBuffer> {
 function domain_sep(s: string): ArrayBuffer {
   const len = new Uint8Array([s.length]);
   const str = new TextEncoder().encode(s);
-  return concat(len, str);
+  return concat(len.buffer, str.buffer);
 }
 
 /**

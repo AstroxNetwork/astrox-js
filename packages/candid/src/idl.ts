@@ -406,7 +406,8 @@ export class TextClass extends PrimitiveType<string> {
     const len = lebDecode(b);
     const buf = safeRead(b, Number(len));
     const decoder = new TextDecoder('utf8', { fatal: true });
-    return decoder.decode(buf);
+    const arr = new Uint8Array(buf);
+    return decoder.decode(arr);
   }
 
   get name() {
@@ -1223,7 +1224,7 @@ export class FuncClass extends ConstructType<[PrincipalId, string]> {
     const mLen = Number(lebDecode(b));
     const buf = safeRead(b, mLen);
     const decoder = new TextDecoder('utf8', { fatal: true });
-    const method = decoder.decode(buf);
+    const method = decoder.decode(new Uint8Array(buf));
 
     return [canister, method];
   }
@@ -1341,7 +1342,7 @@ export function encode(argTypes: Array<Type<any>>, args: any[]): ArrayBuffer {
     }),
   );
 
-  return concat(magic, table, len, typs, vals);
+  return concat(magic.buffer, table, len, typs, vals);
 }
 
 /**
@@ -1357,7 +1358,7 @@ export function decode(retTypes: Type[], bytes: ArrayBuffer): JsonValue[] {
     throw new Error('Message length smaller than magic number');
   }
   const magicBuffer = safeRead(b, magicNumber.length);
-  const magic = new TextDecoder().decode(magicBuffer);
+  const magic = new TextDecoder().decode(new Uint8Array(magicBuffer));
   if (magic !== magicNumber) {
     throw new Error('Wrong magic number: ' + JSON.stringify(magic));
   }

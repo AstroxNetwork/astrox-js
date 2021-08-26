@@ -40,7 +40,7 @@ export async function blsVerify(
           Buffer.from(sig1).toString('hex'),
           new TextDecoder().decode(msg1),
         ]);
-        return verifyResult;
+        return verifyResult === 0;
       };
     }
   }

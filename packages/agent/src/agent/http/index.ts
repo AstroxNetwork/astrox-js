@@ -1,9 +1,10 @@
+import { getKraken } from '@astrox/agent';
 import { JsonObject } from '@astrox/candid';
 import { Principal } from '@astrox/principal';
 import { AnonymousIdentity, Identity } from '../../auth';
 import * as cbor from '../../cbor';
 import { requestIdOf } from '../../request_id';
-import { fromHex } from '../../utils/buffer';
+import { fromHex, toHex } from '../../utils/buffer';
 import {
   Agent,
   QueryFields,
@@ -199,32 +200,60 @@ export class HttpAgent implements Agent {
 
     const body = cbor.encode(transformedRequest.body);
 
-    // Run both in parallel. The fetch is quite expensive, so we have plenty of time to
-    // calculate the requestId locally.
-    const [response, requestId] = await Promise.all([
-      this._fetch('' + new URL(`/api/v2/canister/${ecid.toText()}/call`, this._host), {
-        ...transformedRequest.request,
-        body,
-      }),
-      requestIdOf(submit),
-    ]);
-    console.log('astorx call');
-    if (!response.ok) {
-      throw new Error(
-        `Server returned an error:\n` +
-          `  Code: ${response.status} (${response.statusText})\n` +
-          `  Body: ${await response.text()}\n`,
-      );
-    }
+    const kraken = getKraken();
 
-    return {
-      requestId,
-      response: {
-        ok: response.ok,
-        status: response.status,
-        statusText: response.statusText,
-      },
-    };
+    if (!kraken) {
+      // Run both in parallel. The fetch is quite expensive, so we have plenty of time to
+      // calculate the requestId locally.
+      const [response, requestId] = await Promise.all([
+        this._fetch('' + new URL(`/api/v2/canister/${ecid.toText()}/call`, this._host), {
+          ...transformedRequest.request,
+          body,
+        }),
+        requestIdOf(submit),
+      ]);
+      console.log('astorx call');
+      if (!response.ok) {
+        throw new Error(
+          `Server returned an error:\n` +
+            `  Code: ${response.status} (${response.statusText})\n` +
+            `  Body: ${await response.text()}\n`,
+        );
+      }
+
+      return {
+        requestId,
+        response: {
+          ok: response.ok,
+          status: response.status,
+          statusText: response.statusText,
+        },
+      };
+    } else {
+      const [response, requestId] = await Promise.all([
+        this._fetch('' + new URL(`/api/v2/canister/${ecid.toText()}/call`, this._host), {
+          ...transformedRequest.request,
+          body: toHex(body),
+        }),
+        requestIdOf(submit),
+      ]);
+
+      if (!response.ok) {
+        throw new Error(
+          `Server returned an error:\n` +
+            `  Code: ${response.status} (${response.statusText})\n` +
+            `  Body: ${response.body}\n`,
+        );
+      }
+      return {
+        requestId,
+        response: {
+          ok: response.ok,
+          status: response.status,
+          statusText: response.statusText,
+        },
+      };
+    }
   }
 
   public async query(
@@ -263,22 +292,40 @@ export class HttpAgent implements Agent {
     transformedRequest = await id.transformRequest(transformedRequest);
 
     const body = cbor.encode(transformedRequest.body);
-    const response = await this._fetch(
-      '' + new URL(`/api/v2/canister/${canister.toText()}/query`, this._host),
-      {
-        ...transformedRequest.request,
-        body,
-      },
-    );
-    console.log('astorx query');
-    if (!response.ok) {
-      throw new Error(
-        `Server returned an error:\n` +
-          `  Code: ${response.status} (${response.statusText})\n` +
-          `  Body: ${await response.text()}\n`,
+
+    const kraken = getKraken();
+    if (!kraken) {
+      const response = await this._fetch(
+        '' + new URL(`/api/v2/canister/${canister.toText()}/query`, this._host),
+        {
+          ...transformedRequest.request,
+          body,
+        },
       );
+      console.log('astorx query');
+      if (!response.ok) {
+        throw new Error(
+          `Server returned an error:\n` +
+            `  Code: ${response.status} (${response.statusText})\n` +
+            `  Body: ${await response.text()}\n`,
+        );
+      }
+      return cbor.decode(await response.arrayBuffer());
+    } else {
+      const response = await this._fetch(
+        '' + new URL(`/api/v2/canister/${canister.toText()}/query`, this._host),
+        Object.assign(Object.assign({}, transformedRequest.request), { body: toHex(body) }),
+      );
+      console.log('astrox query');
+      if (!response.ok) {
+        throw new Error(
+          `Server returned an error:\n` +
+            `  Code: ${response.status} (${response.statusText})\n` +
+            `  Body: ${response.body}\n`,
+        );
+      }
+      return cbor.decode(fromHex(response.body as unknown as string));
     }
-    return cbor.decode(await response.arrayBuffer());
   }
 
   public async readState(
@@ -314,22 +361,39 @@ export class HttpAgent implements Agent {
 
     const body = cbor.encode(transformedRequest.body);
 
-    const response = await this._fetch(
-      '' + new URL(`/api/v2/canister/${canister}/read_state`, this._host),
-      {
-        ...transformedRequest.request,
-        body,
-      },
-    );
-    console.log('astorx read_state');
-    if (!response.ok) {
-      throw new Error(
-        `Server returned an error:\n` +
-          `  Code: ${response.status} (${response.statusText})\n` +
-          `  Body: ${await response.text()}\n`,
+    const kraken = getKraken();
+    if (!kraken) {
+      const response = await this._fetch(
+        '' + new URL(`/api/v2/canister/${canister}/read_state`, this._host),
+        {
+          ...transformedRequest.request,
+          body,
+        },
       );
+      console.log('astorx read_state');
+      if (!response.ok) {
+        throw new Error(
+          `Server returned an error:\n` +
+            `  Code: ${response.status} (${response.statusText})\n` +
+            `  Body: ${await response.text()}\n`,
+        );
+      }
+      return cbor.decode(await response.arrayBuffer());
+    } else {
+      const response = await this._fetch(
+        '' + new URL(`/api/v2/canister/${canister}/read_state`, this._host),
+        Object.assign(Object.assign({}, transformedRequest.request), { body: toHex(body) }),
+      );
+      console.log('astorx read_state');
+      if (!response.ok) {
+        throw new Error(
+          `Server returned an error:\n` +
+            `  Code: ${response.status} (${response.statusText})\n` +
+            `  Body: ${response.body}\n`,
+        );
+      }
+      return cbor.decode(fromHex(response.body as unknown as string));
     }
-    return cbor.decode(await response.arrayBuffer());
   }
 
   public async status(): Promise<JsonObject> {
@@ -338,18 +402,31 @@ export class HttpAgent implements Agent {
           Authorization: 'Basic ' + btoa(this._credentials),
         }
       : {};
+    const kraken = getKraken();
+    if (!kraken) {
+      const response = await this._fetch('' + new URL(`/api/v2/status`, this._host), { headers });
+      console.log('astorx status');
+      if (!response.ok) {
+        throw new Error(
+          `Server returned an error:\n` +
+            `  Code: ${response.status} (${response.statusText})\n` +
+            `  Body: ${await response.text()}\n`,
+        );
+      }
 
-    const response = await this._fetch('' + new URL(`/api/v2/status`, this._host), { headers });
-    console.log('astorx status');
-    if (!response.ok) {
-      throw new Error(
-        `Server returned an error:\n` +
-          `  Code: ${response.status} (${response.statusText})\n` +
-          `  Body: ${await response.text()}\n`,
-      );
+      return cbor.decode(await response.arrayBuffer());
+    } else {
+      const response = await this._fetch('' + new URL(`/api/v2/status`, this._host), { headers });
+      console.log('astrox status');
+      if (!response.ok) {
+        throw new Error(
+          `Server returned an error:\n` +
+            `  Code: ${response.status} (${response.statusText})\n` +
+            `  Body: ${response.body}\n`,
+        );
+      }
+      return cbor.decode(fromHex(response.body as unknown as string));
     }
-
-    return cbor.decode(await response.arrayBuffer());
   }
 
   public async fetchRootKey(): Promise<ArrayBuffer> {

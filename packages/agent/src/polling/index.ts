@@ -34,13 +34,13 @@ export async function pollForResponse(
   if (!verified) {
     throw new Error('Fail to verify certificate');
   }
-  const maybeBuf = cert.lookup([...path, new TextEncoder().encode('status')]);
+  const maybeBuf = cert.lookup([...path, new TextEncoder().encode('status').buffer]);
   let status;
   if (typeof maybeBuf === 'undefined') {
     // Missing requestId means we need to wait
     status = RequestStatusResponseStatus.Unknown;
   } else {
-    status = new TextDecoder().decode(maybeBuf);
+    status = new TextDecoder().decode(new Uint8Array(maybeBuf));
   }
 
   switch (status) {
@@ -57,7 +57,9 @@ export async function pollForResponse(
 
     case RequestStatusResponseStatus.Rejected: {
       const rejectCode = new Uint8Array(cert.lookup([...path, 'reject_code'])!)[0];
-      const rejectMessage = new TextDecoder().decode(cert.lookup([...path, 'reject_message'])!);
+      const rejectMessage = new TextDecoder().decode(
+        new Uint8Array(cert.lookup([...path, 'reject_message'])!),
+      );
       throw new Error(
         `Call was rejected:\n` +
           `  Request ID: ${toHex(requestId)}\n` +
