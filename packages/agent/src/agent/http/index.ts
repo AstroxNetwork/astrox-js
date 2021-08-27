@@ -55,6 +55,7 @@ export interface HttpAgentOptions {
 
   // A surrogate to the global fetch function. Useful for testing.
   fetch?: typeof fetch;
+  fetchAgent?: typeof fetch;
 
   // The host to use for the client. By default, uses the same host as
   // the current page.
@@ -70,9 +71,9 @@ export interface HttpAgentOptions {
   };
 }
 
-declare const window: Window & { fetch: typeof fetch };
-declare const global: { fetch: typeof fetch };
-declare const self: { fetch: typeof fetch };
+declare const window: Window & { fetch: typeof fetch; fetchAgent: typeof fetch };
+declare const global: { fetch: typeof fetch; fetchAgent: typeof fetch };
+declare const self: { fetch: typeof fetch; fetchAgent: typeof fetch };
 
 function getDefaultFetch(): typeof fetch {
   const result =
@@ -83,6 +84,23 @@ function getDefaultFetch(): typeof fetch {
           : self.fetch.bind(self)
         : global.fetch.bind(global)
       : window.fetch.bind(window);
+
+  if (!result) {
+    throw new Error('Could not find default `fetch` implementation.');
+  }
+
+  return result;
+}
+
+function getKrakenFetch(): typeof fetch {
+  const result =
+    typeof window === 'undefined'
+      ? typeof global === 'undefined'
+        ? typeof self === 'undefined'
+          ? undefined
+          : (self as unknown as any).fetchAgent.bind(self)
+        : (global as unknown as any).fetchAgent.bind(global)
+      : (window as unknown as any).fetchAgent.bind(window);
 
   if (!result) {
     throw new Error('Could not find default `fetch` implementation.');
@@ -105,6 +123,7 @@ export class HttpAgent implements Agent {
   private readonly _pipeline: HttpAgentRequestTransformFn[] = [];
   private readonly _identity: Promise<Identity>;
   private readonly _fetch: typeof fetch;
+  private readonly _fetchAgent: typeof fetch;
   private readonly _host: URL;
   private readonly _credentials: string | undefined;
   private _rootKeyFetched = false;
@@ -117,10 +136,12 @@ export class HttpAgent implements Agent {
       this._pipeline = [...options.source._pipeline];
       this._identity = options.source._identity;
       this._fetch = options.source._fetch;
+      this._fetchAgent = options.source._fetchAgent;
       this._host = options.source._host;
       this._credentials = options.source._credentials;
     } else {
       this._fetch = options.fetch || getDefaultFetch() || fetch.bind(global);
+      this._fetchAgent = options.fetchAgent || getKrakenFetch() || fetch.bind(global);
     }
     if (options.host !== undefined) {
       if (!options.host.match(/^[a-z]+:/) && typeof window !== 'undefined') {
@@ -231,7 +252,7 @@ export class HttpAgent implements Agent {
       };
     } else {
       const [response, requestId] = await Promise.all([
-        this._fetch('' + new URL(`/api/v2/canister/${ecid.toText()}/call`, this._host), {
+        this._fetchAgent('' + new URL(`/api/v2/canister/${ecid.toText()}/call`, this._host), {
           ...transformedRequest.request,
           body: toHex(body),
         }),
@@ -312,7 +333,7 @@ export class HttpAgent implements Agent {
       }
       return cbor.decode(await response.arrayBuffer());
     } else {
-      const response = await this._fetch(
+      const response = await this._fetchAgent(
         '' + new URL(`/api/v2/canister/${canister.toText()}/query`, this._host),
         Object.assign(Object.assign({}, transformedRequest.request), { body: toHex(body) }),
       );
@@ -380,7 +401,7 @@ export class HttpAgent implements Agent {
       }
       return cbor.decode(await response.arrayBuffer());
     } else {
-      const response = await this._fetch(
+      const response = await this._fetchAgent(
         '' + new URL(`/api/v2/canister/${canister}/read_state`, this._host),
         Object.assign(Object.assign({}, transformedRequest.request), { body: toHex(body) }),
       );
@@ -416,7 +437,9 @@ export class HttpAgent implements Agent {
 
       return cbor.decode(await response.arrayBuffer());
     } else {
-      const response = await this._fetch('' + new URL(`/api/v2/status`, this._host), { headers });
+      const response = await this._fetchAgent('' + new URL(`/api/v2/status`, this._host), {
+        headers,
+      });
       console.log('astrox status');
       if (!response.ok) {
         throw new Error(
