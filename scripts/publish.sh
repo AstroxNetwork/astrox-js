@@ -1,2 +1,2 @@
 #!/bin/bash
-sh ./scripts/build.sh && lerna publish -y
+sh ./scripts/build.sh && lerna publish -y --force-publish
