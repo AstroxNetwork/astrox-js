@@ -93,20 +93,24 @@ function getDefaultFetch(): typeof fetch {
 }
 
 function getKrakenFetch(): typeof fetch {
-  const result =
-    typeof window === 'undefined'
-      ? typeof global === 'undefined'
-        ? typeof self === 'undefined'
-          ? undefined
-          : (self as unknown as any).fetchAgent.bind(self)
-        : (global as unknown as any).fetchAgent.bind(global)
-      : (window as unknown as any).fetchAgent.bind(window);
+  if (getKraken()) {
+    const result =
+      typeof window === 'undefined'
+        ? typeof global === 'undefined'
+          ? typeof self === 'undefined'
+            ? undefined
+            : (self as unknown as any).fetchAgent.bind(self)
+          : (global as unknown as any).fetchAgent.bind(global)
+        : (window as unknown as any).fetchAgent.bind(window);
 
-  if (!result) {
-    throw new Error('Could not find default `fetch` implementation.');
+    if (!result) {
+      throw new Error('Could not find default `fetch` implementation.');
+    }
+
+    return result;
+  } else {
+    return getDefaultFetch();
   }
-
-  return result;
 }
 
 // A HTTP agent allows users to interact with a client of the internet computer
