@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 import {
   AnonymousIdentity,
@@ -190,7 +192,7 @@ export class AuthClient {
     return this._wallet;
   }
 
-  public setWallet(data: string) {
+  public setWallet(data: string): void {
     this._wallet = data;
   }
 

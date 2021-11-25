@@ -63,7 +63,6 @@ export class IC extends ICWindow {
   protected constructor(authClient: AuthClient) {
     super();
     this.#authClient = authClient;
-    this.injectWindow();
   }
 
   public async isAuthenticated(): Promise<boolean> {
@@ -124,10 +123,10 @@ export class IC extends ICWindow {
       ic.getAuthClient().getDelegationIdentity()!,
       ledgerCanisterId,
       actorResult.actor,
-      actorResult.agent,
+      this.#agent,
     );
 
-    this.injectWindow(ic);
+    this.injectWindow();
     return new IC(ic.getAuthClient());
   };
 
