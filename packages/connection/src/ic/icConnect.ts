@@ -183,7 +183,7 @@ export class IC extends ICWindow {
     walletProviderUrl: URL,
     resolve: (value: any) => void,
     reject: (reason?: any) => void,
-    options?: TransactionOptions,
+    options: TransactionOptions,
   ): EventHandler {
     return async (event: MessageEvent) => {
       if (event.origin !== walletProviderUrl.origin) {
@@ -198,7 +198,10 @@ export class IC extends ICWindow {
 
           const request: { kind: TransactionMessageKind } & TransactionOptions = {
             kind: TransactionMessageKind.client,
-            ...options!,
+            from: options.from,
+            to: options.to,
+            amount: options.amount,
+            sendOpts: options.sendOpts,
           };
           this._window?.postMessage(request, walletProviderUrl.origin);
           break;
@@ -206,20 +209,19 @@ export class IC extends ICWindow {
         case TransactionMessageKind.success:
           // Create the delegation chain and store it.
           try {
-            resolve(null);
-
+            resolve(message);
             // Setting the storage is moved out of _handleSuccess to make
             // it a sync function. Having _handleSuccess as an async function
             // messes up the jest tests for some reason.
           } catch (err) {
-            reject(this._handleFailure((err as Error).message, options?.onError));
+            reject(this._handleFailure((err as Error).message, options.onError));
           }
           break;
         case TransactionMessageKind.fail:
           reject(
             this._handleFailure(
               (message as unknown as TransactionResponseFailure).text,
-              options?.onError,
+              options.onError,
             ),
           );
           break;
