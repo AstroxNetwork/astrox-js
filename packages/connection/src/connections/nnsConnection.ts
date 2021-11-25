@@ -16,14 +16,6 @@ import NNS_SERVICE, { AccountDetails } from '../canisters/nns-dapp';
 import { NNS_CANISTER_ID } from '../utils/constants';
 import { CreateActorResult } from '../types';
 
-// const canisterId: string = process.env.NNS_CANISTER_ID!;
-// const NNS_URL: string = process.env.NNS_URL!;
-
-// export const canisterIdPrincipal: Principal = Principal.fromText(canisterId);
-
-// const KEY_SESSIONSTORAGE_KEY = 'identity';
-// const KEY_SESSIONSTORAGE_DELEGATION = 'delegation';
-
 export class NNSConnection extends BaseConnection<NNS_SERVICE> {
   public get accountDetails(): AccountDetails | undefined {
     return this._accountDetails;

@@ -20,7 +20,7 @@ import {
 const days = BigInt(1);
 const hours = BigInt(24);
 const nanoseconds = BigInt(3600000000000);
-const WALLET_PROVIDER_DEFAULT = 'http://localhost:8080/transaction';
+const WALLET_PROVIDER_DEFAULT = 'https://63k2f-nyaaa-aaaah-aakla-cai.raw.ic0.app';
 const WALLET_PROVIDER_ENDPOINT = '#transaction';
 
 declare global {
@@ -36,6 +36,8 @@ export class IC extends ICWindow {
     const newIC = new this(authClient);
 
     const provider = connectOptions?.identityProvider ?? IDENTITY_PROVIDER_DEFAULT;
+
+    newIC._setWalletProvider(connectOptions?.walletProviderUrl);
 
     if (await newIC.isAuthenticated()) {
       await newIC.handleAuthenticated(newIC, { ledgerCanisterId: connectOptions.ledgerCanisterId });
@@ -59,7 +61,8 @@ export class IC extends ICWindow {
   }
   #authClient: AuthClient;
   #agent?: HttpAgent;
-  #localLedger?: LedgerConnection; // a local ledger to query balance only
+  #localLedger?: LedgerConnection;
+  #walletProvider?: string; // a local ledger to query balance only
   protected constructor(authClient: AuthClient) {
     super();
     this.#authClient = authClient;
@@ -80,6 +83,10 @@ export class IC extends ICWindow {
 
   public get wallet(): string | undefined {
     return this.#authClient.wallet;
+  }
+
+  private _setWalletProvider(provider?: string) {
+    this.#walletProvider = provider;
   }
 
   protected getAuthClient(): AuthClient {
@@ -157,7 +164,7 @@ export class IC extends ICWindow {
   // requestTransfer
   public requestTransfer = async (options: TransactionOptions): Promise<void> => {
     const walletProviderUrl = new URL(
-      options?.walletProvider?.toString() || WALLET_PROVIDER_DEFAULT,
+      options?.walletProvider?.toString() || this.#walletProvider || WALLET_PROVIDER_DEFAULT,
     );
     walletProviderUrl.hash = WALLET_PROVIDER_ENDPOINT;
     this._openWindow(
