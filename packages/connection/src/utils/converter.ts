@@ -133,13 +133,16 @@ export enum TokenSymbol {
   ICP = 'ICP',
 }
 
+export interface TokenMapItem {
+  [key: string]: { amount: number; symbol: string };
+}
+
 export const formatAssetBySymbol = (
   _amount: bigint,
   symbol: string,
 ): { amount: number; symbol: string } | undefined => {
   const amount = parseInt(_amount?.toString(), 10);
-  console.log(amount);
-  const tokenMap = [
+  const tokenMap: TokenMapItem[] = [
     {
       ICP: {
         amount: amount / E8S_PER_ICP,
@@ -147,8 +150,6 @@ export const formatAssetBySymbol = (
       },
     },
   ];
-  console.log({ symbol });
   const found = tokenMap.find(v => v[symbol] !== undefined);
-  console.log({ found });
   return found?.[symbol];
 };
