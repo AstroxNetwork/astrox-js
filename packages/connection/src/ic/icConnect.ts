@@ -38,7 +38,7 @@ export class IC extends ICWindow {
     const provider = connectOptions?.identityProvider ?? IDENTITY_PROVIDER_DEFAULT;
 
     if (await newIC.isAuthenticated()) {
-      await newIC.handleAuthenticated(newIC);
+      await newIC.handleAuthenticated(newIC, { ledgerCanisterId: connectOptions.ledgerCanisterId });
       await connectOptions?.onAuthenticated?.(newIC);
       return newIC;
     }
@@ -48,7 +48,9 @@ export class IC extends ICWindow {
       maxTimeToLive: connectOptions?.maxTimeToLive ?? days * hours * nanoseconds,
       permissions: connectOptions?.permissions ?? [PermissionsType.identity],
       onSuccess: async () => {
-        await newIC.handleAuthenticated(newIC);
+        await newIC.handleAuthenticated(newIC, {
+          ledgerCanisterId: connectOptions.ledgerCanisterId,
+        });
         (await connectOptions?.onSuccess?.()) ?? (await connectOptions?.onAuthenticated?.(newIC));
       },
       onError: newIC.handleError,
@@ -100,7 +102,10 @@ export class IC extends ICWindow {
     return result;
   };
 
-  public handleAuthenticated = async (ic: IC): Promise<IC> => {
+  public handleAuthenticated = async (
+    ic: IC,
+    { ledgerCanisterId }: { ledgerCanisterId?: string },
+  ): Promise<IC> => {
     const identity = ic.getAuthClient().getIdentity();
 
     this.#agent = new HttpAgent({ identity });
@@ -111,6 +116,7 @@ export class IC extends ICWindow {
     this.#localLedger = LedgerConnection.createConnection(
       ic.getAuthClient().getInnerKey()!,
       ic.getAuthClient().getDelegationIdentity()!,
+      ledgerCanisterId,
     );
 
     this.injectWindow(ic);

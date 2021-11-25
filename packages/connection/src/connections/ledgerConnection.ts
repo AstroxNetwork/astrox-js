@@ -37,6 +37,7 @@ export class LedgerConnection extends BaseConnection<LEDGER_SERVICE> {
    * create connection
    * @param identity
    * @param delegationIdentity
+   * @param legerCanisterId
    * @param actor
    * @param agent
    * @function createConnection
@@ -45,10 +46,17 @@ export class LedgerConnection extends BaseConnection<LEDGER_SERVICE> {
   static createConnection(
     identity: SignIdentity,
     delegationIdentity: DelegationIdentity,
+    legerCanisterId?: string,
     actor?: ActorSubclass<LEDGER_SERVICE>,
     agent?: HttpAgent,
   ): LedgerConnection {
-    return new LedgerConnection(identity, delegationIdentity, actor, agent);
+    return new LedgerConnection(
+      identity,
+      delegationIdentity,
+      actor,
+      agent,
+      legerCanisterId ?? LEDGER_CANISTER_ID,
+    );
   }
 
   /**
@@ -74,11 +82,13 @@ export class LedgerConnection extends BaseConnection<LEDGER_SERVICE> {
   static async createConnectionWithII(
     identity: SignIdentity,
     delegationIdentity: DelegationIdentity,
+    legerCanisterId?: string,
   ): Promise<LedgerConnection> {
     const actorResult = await LedgerConnection.createActor(delegationIdentity);
     return LedgerConnection.createConnection(
       identity,
       delegationIdentity,
+      legerCanisterId ?? LEDGER_CANISTER_ID,
       actorResult.actor,
       actorResult.agent,
     );

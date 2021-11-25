@@ -88,6 +88,10 @@ export interface AuthClientLoginOptions extends AuthClientCreateOptions {
   onAuthenticated?: (ic: IC) => void | Promise<void>;
 }
 
+export interface ConnectOptions extends AuthClientLoginOptions {
+  ledgerCanisterId?: string;
+}
+
 export interface TransactionOptions {
   /**
    * Identity provider. By default, use the identity service.
@@ -156,8 +160,6 @@ export enum PermissionsType {
   identity = 'permissions-identity',
   wallet = 'permissions-wallet',
 }
-
-export type ConnectOptions = AuthClientLoginOptions;
 
 // Transaction Types
 export enum TransactionMessageKind {
