@@ -1,6 +1,6 @@
 {
   "name": "@astrox/ax-types",
-  "version": "0.0.0",
+  "version": "0.0.12",
   "author": "AstroX Network",
   "license": "MIT",
   "description": "TypeScript definitions for ax",
@@ -16,7 +16,6 @@
     "access": "public"
   },
   "scripts": {},
-  "dependencies": {},
   "typesPublisherContentHash": "e35c02431c6153cb4f7280c296d68c5dead5ce1584c60e4fe11b5132cbf41b3f",
   "typeScriptVersion": "3.6"
 }
