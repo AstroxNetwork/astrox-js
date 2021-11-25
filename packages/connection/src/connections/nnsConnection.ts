@@ -9,16 +9,12 @@ import {
 } from '@dfinity/agent';
 import { DelegationIdentity } from '@dfinity/identity';
 
-import {
-  BaseConnection,
-  CreateActorResult,
-  executeWithLogging,
-  _createActor,
-} from './baseConnection';
+import { BaseConnection, executeWithLogging, _createActor } from './baseConnection';
 import nns_idl from '../canisters/nns-dapp.idl';
 import nns_idl_cert from '../canisters/nns-dapp-cert.idl';
 import NNS_SERVICE, { AccountDetails } from '../canisters/nns-dapp';
 import { NNS_CANISTER_ID } from '../utils/constants';
+import { CreateActorResult } from '../types';
 
 // const canisterId: string = process.env.NNS_CANISTER_ID!;
 // const NNS_URL: string = process.env.NNS_URL!;

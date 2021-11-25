@@ -24,7 +24,7 @@ import {
   InternetIdentityAuthRequest,
   MeAuthResponseSuccess,
   PermissionsType,
-} from './types';
+} from '../types';
 import {
   IDENTITY_PROVIDER_DEFAULT,
   IDENTITY_PROVIDER_ENDPOINT,

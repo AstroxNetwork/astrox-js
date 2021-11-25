@@ -1,9 +1,4 @@
-import {
-  BaseConnection,
-  CreateActorResult,
-  executeWithLogging,
-  _createActor,
-} from './baseConnection';
+import { BaseConnection, executeWithLogging, _createActor } from './baseConnection';
 import ledger_idl from '../canisters/ledger.idl';
 import LEDGER_SERVICE, {
   AccountIdentifier,
@@ -16,15 +11,9 @@ import { ActorSubclass, HttpAgent, SignIdentity } from '@dfinity/agent';
 import { DelegationIdentity } from '@dfinity/identity';
 import { fromSubAccountId } from '../utils/converter';
 import { LEDGER_CANISTER_ID } from '../utils/constants';
+import { CreateActorResult, SendOpts } from '../types';
 
 // export const canisterIdPrincipal: Principal = Principal.fromText(LEDGER_CANISTER_ID);
-
-export interface SendOpts {
-  fee?: bigint;
-  memo?: Memo;
-  from_subaccount?: number;
-  created_at_time?: Date;
-}
 
 export class LedgerConnection extends BaseConnection<LEDGER_SERVICE> {
   protected constructor(

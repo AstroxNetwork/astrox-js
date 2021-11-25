@@ -1,9 +1,49 @@
-import { SignIdentity } from '@dfinity/agent';
+import { ActorSubclass, HttpAgent, SignIdentity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { IC } from './icConnect';
-import { AccountIdentifier } from '../utils/common/types';
+import { AccountIdentifier, Memo } from '../utils/common/types';
+import { DelegationChain, DelegationIdentity } from '@dfinity/identity';
+import { IC } from 'src/ic';
 
-import { SendOpts } from '../connections/ledgerConnection';
+export interface IIDelegationResult {
+  delegation: {
+    pubkey: Uint8Array;
+    expiration: bigint;
+    targets?: Principal[];
+  };
+  signature: Uint8Array;
+}
+
+export interface DelegationMessage {
+  kind: string;
+  delegations: IIDelegationResult[];
+  userPublicKey: Uint8Array;
+}
+
+export interface HandleDelegationResult {
+  delegationChain: DelegationChain;
+  delegationIdentity: DelegationIdentity;
+}
+
+export interface AbstractConnection<T> {
+  identity: SignIdentity;
+  delegationIdentity: DelegationIdentity;
+  actor?: ActorSubclass<T>;
+  agent?: HttpAgent;
+  canisterId?: string;
+  getActor(): Promise<ActorSubclass<T>>;
+}
+
+export interface CreateActorResult<T> {
+  actor: ActorSubclass<T>;
+  agent: HttpAgent;
+}
+
+export interface SendOpts {
+  fee?: bigint;
+  memo?: Memo;
+  from_subaccount?: number;
+  created_at_time?: Date;
+}
 
 /**
  * List of options for creating an {@link AuthClient}.

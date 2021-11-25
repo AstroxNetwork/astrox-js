@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { EventHandler } from './types';
+import { EventHandler } from '../types';
 
 export class ICWindow {
   protected _window?: Window;

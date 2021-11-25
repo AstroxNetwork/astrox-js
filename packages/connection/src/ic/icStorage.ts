@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { AuthClientStorage } from './types';
+import { AuthClientStorage } from '../types';
 
 export const KEY_SESSIONSTORAGE_KEY = 'identity';
 export const KEY_SESSIONSTORAGE_DELEGATION = 'delegation';

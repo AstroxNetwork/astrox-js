@@ -15,7 +15,7 @@ import {
   TransactionOptions,
   TransactionResponseFailure,
   TransactionResponseMessage,
-} from './types';
+} from '../types';
 
 const days = BigInt(1);
 const hours = BigInt(24);

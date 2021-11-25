@@ -15,11 +15,12 @@ import {
   Ed25519KeyIdentity,
 } from '@dfinity/identity';
 import { Principal } from '@dfinity/principal';
-
-export interface CreateActorResult<T> {
-  actor: ActorSubclass<T>;
-  agent: HttpAgent;
-}
+import {
+  AbstractConnection,
+  CreateActorResult,
+  DelegationMessage,
+  HandleDelegationResult,
+} from '../types';
 
 export function createConnection<T>(
   identity: SignIdentity,
@@ -73,15 +74,6 @@ export async function _createActor<T>(
   return { actor, agent };
 }
 
-export interface AbstractConnection<T> {
-  identity: SignIdentity;
-  delegationIdentity: DelegationIdentity;
-  actor?: ActorSubclass<T>;
-  agent?: HttpAgent;
-  canisterId?: string;
-  getActor(): Promise<ActorSubclass<T>>;
-}
-
 export class BaseConnection<T> implements AbstractConnection<T> {
   constructor(
     public identity: SignIdentity,
@@ -125,30 +117,10 @@ export class BaseConnection<T> implements AbstractConnection<T> {
   }
 }
 
-export interface IIDelegationResult {
-  delegation: {
-    pubkey: Uint8Array;
-    expiration: bigint;
-    targets?: Principal[];
-  };
-  signature: Uint8Array;
-}
-
-export interface DelegationMessage {
-  kind: string;
-  delegations: IIDelegationResult[];
-  userPublicKey: Uint8Array;
-}
-
-export interface DelegationResult {
-  delegationIdentity: DelegationIdentity;
-  delegationChain: DelegationChain;
-}
-
 export async function handleDelegation(
   message: DelegationMessage,
   key: SignIdentity,
-): Promise<DelegationResult> {
+): Promise<HandleDelegationResult> {
   const delegations = message.delegations.map(signedDelegation => {
     return {
       delegation: new Delegation(
