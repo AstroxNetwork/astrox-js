@@ -113,10 +113,18 @@ export class IC extends ICWindow {
     if (!process.env.isProduction) {
       await this.#agent.fetchRootKey();
     }
+
+    const actorResult = await LedgerConnection.createActor(
+      ic.getAuthClient().getDelegationIdentity()!,
+      ledgerCanisterId,
+    );
+
     this.#localLedger = LedgerConnection.createConnection(
       ic.getAuthClient().getInnerKey()!,
       ic.getAuthClient().getDelegationIdentity()!,
       ledgerCanisterId,
+      actorResult.actor,
+      actorResult.agent,
     );
 
     this.injectWindow(ic);
