@@ -1,0 +1,49 @@
+{
+  "name": "@astrox/connection",
+  "version": "0.0.1",
+  "author": "AstroX",
+  "license": "Apache-2.0",
+  "description": "JavaScript and TypeScript library to work with candid interfaces",
+  "homepage": "https://github.com/AstroxNetwork/astrox-js",
+  "keywords": [
+    "internet computer",
+    "ic",
+    "dfinity",
+    "canister",
+    "webauthn",
+    "identity",
+    "principal",
+    "dfx",
+    "candid",
+    "motoko",
+    "javascript",
+    "typescript",
+    "blockchain",
+    "crypto",
+    "distributed",
+    "api"
+  ],
+  "main": "./lib/cjs/index.js",
+  "module": "./lib/esm/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -b && tsc -p tsconfig-cjs.json",
+    "bundle": "npm run build",
+    "ci": "npm run prettier && npm run lint && npm run test",
+    "lint": "eslint 'src' --ext '.js,.jsx,.ts,.tsx'",
+    "lint:fix": "npm run lint -- --fix",
+    "make:docs/reference": "typedoc src/index.ts --out ../../docs/generated/candid --excludeInternal",
+    "prettier": "prettier --check \"src/**/*.ts\"",
+    "prettier:write": "npm run prettier -- --write",
+    "test": "jest",
+    "test:coverage": "jest --verbose --collectCoverage"
+  },
+  "dependencies": {
+    "@astrox/agent": "^0.0.11",
+    "@astrox/candid": "^0.0.11",
+    "@astrox/identity": "^0.0.11",
+    "@astrox/principal": "^0.0.11"
+  }
+}
