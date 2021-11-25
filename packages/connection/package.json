@@ -1,6 +1,6 @@
 {
   "name": "@astrox/connection",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "author": "AstroX",
   "license": "Apache-2.0",
   "description": "JavaScript and TypeScript library to work with candid interfaces",
