@@ -4,22 +4,22 @@ import {
   executeWithLogging,
   _createActor,
 } from './baseConnection';
-import ledger_idl from './canisters/ledger.idl';
+import ledger_idl from '../canisters/ledger.idl';
 import LEDGER_SERVICE, {
   AccountIdentifier,
   BlockHeight,
   Memo,
   SubAccount,
   TimeStamp,
-} from './canisters/ledger';
-import { ActorSubclass, HttpAgent, SignIdentity } from '@astrox/agent';
-import { DelegationIdentity } from '@astrox/identity';
-import { fromSubAccountId } from './utils/converter';
-import { LEDGER_CANISTER_ID } from './utils/constants';
+} from '../canisters/ledger';
+import { ActorSubclass, HttpAgent, SignIdentity } from '@dfinity/agent';
+import { DelegationIdentity } from '@dfinity/identity';
+import { fromSubAccountId } from '../utils/converter';
+import { LEDGER_CANISTER_ID } from '../utils/constants';
 
 // export const canisterIdPrincipal: Principal = Principal.fromText(LEDGER_CANISTER_ID);
 
-interface SendOpts {
+export interface SendOpts {
   fee?: bigint;
   memo?: Memo;
   from_subaccount?: number;

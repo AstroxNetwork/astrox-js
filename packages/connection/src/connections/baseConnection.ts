@@ -5,16 +5,16 @@ import {
   HttpAgent,
   Signature,
   SignIdentity,
-} from '@astrox/agent';
-// import { blobFromUint8Array, derBlobFromBlob } from '@astrox/candid';
-import { InterfaceFactory } from '@astrox/candid/lib/cjs/idl';
+} from '@dfinity/agent';
+// import { blobFromUint8Array, derBlobFromBlob } from '@dfinity/candid';
+import { InterfaceFactory } from '@dfinity/candid/lib/cjs/idl';
 import {
   Delegation,
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
-} from '@astrox/identity';
-import { Principal } from '@astrox/principal';
+} from '@dfinity/identity';
+import { Principal } from '@dfinity/principal';
 
 export interface CreateActorResult<T> {
   actor: ActorSubclass<T>;

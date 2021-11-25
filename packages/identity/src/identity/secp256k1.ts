@@ -1,9 +1,9 @@
 /* eslint-disable no-underscore-dangle */
 import { DerEncodedPublicKey, KeyPair, Signature } from '@astrox/agent';
-import Secp256k1 from 'secp256k1';
-import { sha256 } from 'js-sha256';
-import { randomBytes } from 'tweetnacl';
 import { PublicKey, SignIdentity } from '@astrox/agent';
+import { sha256 } from 'js-sha256';
+import Secp256k1 from 'secp256k1';
+import { randomBytes } from 'tweetnacl';
 import { fromHexString, toHexString } from '../buffer';
 import { SECP256K1_OID, unwrapDER, wrapDER } from './der';
 
