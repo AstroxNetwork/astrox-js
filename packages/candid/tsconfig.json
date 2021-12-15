@@ -17,6 +17,10 @@
     "strict": true,
     "target": "es2017"
   },
-  "include": ["types/*", "src/**/*", "vendor/bls"],
+  "include": ["src/**/*", "vendor/bls"],
+  "exclude": [
+    "test.ts",
+    "types/**/*.spec.ts"
+  ],
   "references": []
 }

@@ -40,9 +40,6 @@
     "test:coverage": "jest --verbose --collectCoverage"
   },
   "devDependencies": {
-    "@astrox/agent": "^0.0.24",
-    "@astrox/identity": "^0.0.24",
-    "@astrox/principal": "^0.0.24",
     "@trust/webcrypto": "^0.9.2",
     "@types/jest": "^24.9.1",
     "@typescript-eslint/eslint-plugin": "^4.14.2",
@@ -59,5 +56,12 @@
     "typescript": "^4.2.3",
     "whatwg-fetch": "^3.0.0"
   },
-  "gitHead": "25e10abdb13cf9f00a8c50ea39cd4e3ce21ac11a"
+  "gitHead": "25e10abdb13cf9f00a8c50ea39cd4e3ce21ac11a",
+  "dependencies": {
+    "@astrox/agent": "^0.0.24",
+    "@astrox/identity": "^0.0.24",
+    "@astrox/principal": "^0.0.24",
+    "buffer": "6.0.3",
+    "simple-cbor": "^0.4.1"
+  }
 }
