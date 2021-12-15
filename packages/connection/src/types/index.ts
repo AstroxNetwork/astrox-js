@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ActorSubclass, HttpAgent, SignIdentity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { AccountIdentifier, Memo } from '../utils/common/types';
@@ -181,6 +182,14 @@ export interface TransactionResponseFailure {
 
 export interface TransactionResponseSuccess {
   kind: TransactionMessageKind.success;
+  payload?: {
+    blockHeight: bigint;
+    originPayload: {
+      to: AccountIdentifier;
+      amount: bigint;
+      sendOpts?: Partial<SendOpts>;
+    };
+  };
 }
 
 export type TransactionResponseMessage = TransactionReadyMessage | TransactionResponse;
