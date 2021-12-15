@@ -106,7 +106,7 @@ export interface TransactionOptions {
   /**
    * Callback once login has completed
    */
-  onSuccess?: () => void | Promise<void>;
+  onSuccess?: (value?:any) => void | Promise<void>;
   /**
    * Callback in case authentication fails
    */

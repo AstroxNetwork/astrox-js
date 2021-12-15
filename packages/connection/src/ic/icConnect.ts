@@ -15,6 +15,7 @@ import {
   TransactionOptions,
   TransactionResponseFailure,
   TransactionResponseMessage,
+  TransactionResponseSuccess,
 } from '../types';
 
 const days = BigInt(1);
@@ -195,7 +196,6 @@ export class IC extends ICWindow {
       switch (message.kind) {
         case TransactionMessageKind.ready: {
           // IDP is ready. Send a message to request authorization.
-
           const request: { kind: TransactionMessageKind } & TransactionOptions = {
             kind: TransactionMessageKind.client,
             from: options.from,
@@ -209,10 +209,7 @@ export class IC extends ICWindow {
         case TransactionMessageKind.success:
           // Create the delegation chain and store it.
           try {
-            resolve(message);
-            // Setting the storage is moved out of _handleSuccess to make
-            // it a sync function. Having _handleSuccess as an async function
-            // messes up the jest tests for some reason.
+            resolve(this._handleSuccess(message, options.onSuccess));
           } catch (err) {
             reject(this._handleFailure((err as Error).message, options.onError));
           }
@@ -234,9 +231,17 @@ export class IC extends ICWindow {
     errorMessage?: string,
     onError?: (error?: string) => void,
   ): string | undefined {
-    this._window?.close();
+    this._remove();
     onError?.(errorMessage);
-    this._removeEventListener();
     return errorMessage;
+  }
+
+  private _handleSuccess(
+    value?: TransactionResponseSuccess,
+    onSuccess?: (value?: TransactionResponseSuccess) => void,
+  ): TransactionResponseSuccess | undefined {
+    this._remove();
+    onSuccess?.(value);
+    return value;
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@astrox/identity-ledgerhq",
-  "version": "0.0.20",
+  "version": "0.0.24",
   "author": "DFINITY Stiftung <sdk@astrox.org>",
   "license": "Apache-2.0",
   "description": "JavaScript and TypeScript library to manage identity and authentication with the Internet Computer",
@@ -42,9 +42,9 @@
     "test:coverage": "jest --verbose --collectCoverage"
   },
   "dependencies": {
-    "@astrox/agent": "^0.0.20",
-    "@astrox/identity": "^0.0.20",
-    "@astrox/principal": "^0.0.20",
+    "@astrox/agent": "^0.0.24",
+    "@astrox/identity": "^0.0.24",
+    "@astrox/principal": "^0.0.24",
     "@ledgerhq/hw-transport": "^5.49.0",
     "@ledgerhq/hw-transport-webhid": "^5.49.0",
     "@zondax/ledger-dfinity": "0.2.1",
@@ -68,5 +68,5 @@
     "typescript": "^4.2.3",
     "whatwg-fetch": "^3.0.0"
   },
-  "gitHead": "8dee765807679ef0798ab26dc980d154c515da6e"
+  "gitHead": "25e10abdb13cf9f00a8c50ea39cd4e3ce21ac11a"
 }

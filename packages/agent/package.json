@@ -1,6 +1,6 @@
 {
   "name": "@astrox/agent",
-  "version": "0.0.20",
+  "version": "0.0.24",
   "author": "AstroX Network",
   "license": "Apache-2.0",
   "description": "JavaScript and TypeScript library to interact with the Internet Computer",
@@ -44,8 +44,8 @@
     "tslint": "tslint --project tsconfig.json --config tslint.json"
   },
   "dependencies": {
-    "@astrox/candid": "^0.0.20",
-    "@astrox/principal": "^0.0.20",
+    "@astrox/candid": "^0.0.24",
+    "@astrox/principal": "^0.0.24",
     "base64-arraybuffer": "^0.2.0",
     "bignumber.js": "^9.0.0",
     "borc": "^2.1.1",
@@ -72,5 +72,5 @@
   "jest": {
     "preset": "ts-jest"
   },
-  "gitHead": "8dee765807679ef0798ab26dc980d154c515da6e"
+  "gitHead": "25e10abdb13cf9f00a8c50ea39cd4e3ce21ac11a"
 }

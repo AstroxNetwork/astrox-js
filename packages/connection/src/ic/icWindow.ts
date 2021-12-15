@@ -13,9 +13,13 @@ export class ICWindow {
   }
 
   protected _openWindow(url: string, target?: string, feature?: string) {
-    this._window?.close();
-    this._removeEventListener();
+    this._remove();
     // Open a new window with the IDP provider.
     this._window = window.open(url, target ?? 'icWindow', feature) ?? undefined;
+  }
+
+  protected _remove(){
+    this._window?.close();
+    this._removeEventListener();
   }
 }
