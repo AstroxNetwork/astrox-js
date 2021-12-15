@@ -1,6 +1,6 @@
 {
   "name": "@astrox/connection",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "author": "AstroX",
   "license": "Apache-2.0",
   "description": "JavaScript and TypeScript library to work with candid interfaces",
@@ -49,5 +49,5 @@
     "@types/crc": "^3.4.0",
     "crc": "^3.8.0"
   },
-  "gitHead": "8dee765807679ef0798ab26dc980d154c515da6e"
+  "gitHead": "35a894fc2bf48598f524a18573d44b2451eb8522"
 }
