@@ -19,6 +19,6 @@
     { "path": "packages/principal" },
     { "path": "packages/connection" }
   ],
-  "include": ["packages/**/types/*"],
+  "include": ["packages/**/types/*", "packages/connection/src/canisters"],
   "resolveJsonModule": true
 }

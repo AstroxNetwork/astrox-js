@@ -54,5 +54,8 @@
     "typescript": "^4.2.3",
     "whatwg-fetch": "^3.0.0"
   },
-  "gitHead": "25e10abdb13cf9f00a8c50ea39cd4e3ce21ac11a"
+  "gitHead": "25e10abdb13cf9f00a8c50ea39cd4e3ce21ac11a",
+  "dependencies": {
+    "js-sha256": "^0.9.0"
+  }
 }

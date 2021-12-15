@@ -3,7 +3,7 @@
   "extends": ["tslint:recommended"],
   "jsRules": {},
   "linterOptions": {
-    "exclude": ["src/IDL.js", "src/IDL.test.js"]
+    "exclude": ["src/IDL.js", "src/IDL.test.js","types/*.d.ts"]
   },
   "rules": {
     "max-classes-per-file": false,
