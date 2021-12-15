@@ -1,6 +1,6 @@
 {
   "name": "@astrox/authentication",
-  "version": "0.0.26",
+  "version": "0.0.27",
   "author": "DFINITY Stiftung <sdk@astrox.org>",
   "license": "Apache-2.0",
   "description": "JavaScript and TypeScript library to manage identity and authentication with the Internet Computer",
@@ -58,9 +58,9 @@
   },
   "gitHead": "8173bb829917c941e37cd038bca972948cc58c5b",
   "dependencies": {
-    "@astrox/agent": "^0.0.26",
-    "@astrox/identity": "^0.0.26",
-    "@astrox/principal": "^0.0.26",
+    "@astrox/agent": "^0.0.27",
+    "@astrox/identity": "^0.0.27",
+    "@astrox/principal": "^0.0.27",
     "buffer": "6.0.3",
     "simple-cbor": "^0.4.1"
   }
