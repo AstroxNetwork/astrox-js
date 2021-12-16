@@ -202,6 +202,8 @@ export class IC extends ICWindow {
             to: options.to,
             amount: options.amount,
             sendOpts: options.sendOpts,
+            maxTimeout: options.maxTimeout ?? 90,
+            successTimeout: options.successTimeout ?? 10
           };
           this._window?.postMessage(request, walletProviderUrl.origin);
           break;
@@ -209,7 +211,7 @@ export class IC extends ICWindow {
         case TransactionMessageKind.success:
           // Create the delegation chain and store it.
           try {
-            resolve(this._handleSuccess(message, options.onSuccess));
+            resolve(this._handleSuccess(message, options.onSuccess, options.successTimeout ?? 10));
           } catch (err) {
             reject(this._handleFailure((err as Error).message, options.onError));
           }
@@ -239,8 +241,9 @@ export class IC extends ICWindow {
   private _handleSuccess(
     value?: TransactionResponseSuccess,
     onSuccess?: (value?: TransactionResponseSuccess) => void,
+    delay?: number
   ): TransactionResponseSuccess | undefined {
-    this._remove();
+    setTimeout(() => this._remove(), delay);
     onSuccess?.(value);
     return value;
   }

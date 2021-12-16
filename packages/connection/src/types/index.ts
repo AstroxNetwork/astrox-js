@@ -103,10 +103,12 @@ export interface TransactionOptions {
   to: AccountIdentifier;
   amount: bigint;
   sendOpts: SendOpts;
+  maxTimeout?: number;
+  successTimeout?: number;
   /**
    * Callback once login has completed
    */
-  onSuccess?: (value?:any) => void | Promise<void>;
+  onSuccess?: (value?: any) => void | Promise<void>;
   /**
    * Callback in case authentication fails
    */
