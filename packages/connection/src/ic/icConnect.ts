@@ -243,7 +243,12 @@ export class IC extends ICWindow {
     onSuccess?: (value?: TransactionResponseSuccess) => void,
     delay?: number
   ): TransactionResponseSuccess | undefined {
-    setTimeout(() => this._remove(), delay);
+    if (delay) {
+      setTimeout(() => this._remove(), delay * 1000);
+    } else {
+      this._remove();
+    }
+
     onSuccess?.(value);
     return value;
   }
