@@ -13,3 +13,8 @@ export enum WalletType {
   me = 'me',
   unknown = 'unknown',
 }
+
+export interface Balance {
+  value: string;
+  decimals: number;
+}

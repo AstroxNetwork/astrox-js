@@ -2,8 +2,8 @@ import { Principal } from '@dfinity/principal';
 import { sha224 } from 'js-sha256';
 import { Buffer } from 'buffer';
 import crc from 'crc';
-import { SUB_ACCOUNT_BYTE_LENGTH } from './constants';
-import { AccountIdentifier, SubAccount } from './common/types';
+import { ALPHANUM_REGEX, CANISTER_MAX_LENGTH, SUB_ACCOUNT_BYTE_LENGTH } from './constants';
+import { AccountIdentifier, Balance, SubAccount } from './common/types';
 
 export const uint8ArrayToBigInt = (array: Uint8Array): bigint => {
   const view = new DataView(array.buffer, array.byteOffset, array.byteLength);
@@ -133,23 +133,131 @@ export enum TokenSymbol {
   ICP = 'ICP',
 }
 
+export const getDecimalFromSymbol = (sym: string) => {
+  switch (sym) {
+    case TokenSymbol.ICP:
+      return 8;
+    default:
+      return 8;
+  }
+};
+
 export interface TokenMapItem {
-  [key: string]: { amount: number; symbol: string };
+  [key: string]: { amount: number; symbol: string; balanceString: BalanceString };
 }
+
+
 
 export const formatAssetBySymbol = (
   _amount: bigint,
   symbol: string,
-): { amount: number; symbol: string } | undefined => {
-  const amount = parseInt(_amount?.toString(), 10);
+):
+  | { amount: number; symbol: string; balanceString: BalanceString }
+  | undefined => {
+  const balanceString = balanceToString(_amount, getDecimalFromSymbol(symbol));
+  const amount = Number(balanceString.total);
   const tokenMap: TokenMapItem[] = [
     {
       ICP: {
-        amount: amount / E8S_PER_ICP,
+        amount: amount,
+        balanceString,
         symbol: 'ICP',
       },
     },
   ];
-  const found = tokenMap.find(v => v[symbol] !== undefined);
+
+  const found = tokenMap.find((v) => v[symbol] !== undefined);
   return found?.[symbol];
+};
+
+export const parseBalance = (balance: Balance): string => {
+  return (parseInt(balance.value, 10) / 10 ** balance.decimals).toString();
+};
+
+export const balanceFromString = (
+  balance: string,
+  decimal: number = 8,
+): bigint => {
+  const list = balance.split('.');
+  const aboveZero = list[0];
+  const aboveZeroBigInt = BigInt(aboveZero) * BigInt(1 * 10 ** decimal);
+  let belowZeroBigInt = BigInt(0);
+  const belowZero = list[1];
+  if (belowZero !== undefined) {
+    belowZeroBigInt = BigInt(
+      belowZero.substring(0, decimal).padEnd(decimal, '0'),
+    );
+  }
+  return aboveZeroBigInt + belowZeroBigInt;
+};
+
+export interface BalanceString {
+  total: string;
+  aboveZero: string;
+  belowZero: string;
+  formatAboveZero: string;
+}
+
+export const balanceToString = (
+  balance: bigint,
+  decimal: number = 8,
+): BalanceString => {
+  const balanceString = balance.toString(10);
+  const balanceStringLength = balanceString.length;
+  let aboveZero = '0';
+  let belowZero = '0'.padEnd(decimal, '0');
+  if (balanceStringLength > decimal) {
+    belowZero = balanceString.substring(
+      balanceStringLength - decimal,
+      balanceStringLength,
+    );
+    aboveZero = balanceString.substring(0, balanceStringLength - decimal);
+  } else {
+    belowZero = balanceString.padStart(decimal, '0');
+  }
+  const formatAboveZero = String(aboveZero).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  return { total: aboveZero + '.' + belowZero, aboveZero, belowZero, formatAboveZero };
+};
+
+export const validateAccountId = (text: string): boolean =>
+  text.length === 64 && ALPHANUM_REGEX.test(text);
+
+export const validatePrincipalId = (text: string) => {
+  try {
+    return text === Principal.fromText(text).toString();
+  } catch (e) {
+    return false;
+  }
+};
+
+export const validateCanisterId = (text: string) => {
+  try {
+    return text.length <= CANISTER_MAX_LENGTH && validatePrincipalId(text);
+  } catch (e) {
+    return false;
+  }
+};
+
+export enum AddressType {
+  PRINCIPAL = 'principal',
+  ACCOUNT = 'accountId',
+  CANISTER = 'canister',
+  ERC20 = 'erc20',
+  INVALID = 'invalid',
+}
+
+export const getAddressType = (text: string) => {
+  try {
+    if (validateAccountId(text)) {
+      return AddressType.ACCOUNT;
+    } else if (validatePrincipalId(text)) {
+      return AddressType.PRINCIPAL;
+    } else if (validateCanisterId(text)) {
+      return AddressType.CANISTER;
+    }
+    return AddressType.INVALID;
+  } catch (error) {
+    throw error;
+  }
 };

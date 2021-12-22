@@ -96,8 +96,7 @@ export class AuthClient {
       storage,
       options.appId,
       wallet !== null ? wallet : undefined,
-      options.idpWindowOption ??
-        'height=600, width=800, top=0, right=0, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no',
+      options.idpWindowOption,
     );
   }
 
@@ -115,7 +114,7 @@ export class AuthClient {
     private _idpWindow?: Window,
     // The event handler for processing events from the IdP.
     private _eventHandler?: (event: MessageEvent) => void,
-  ) {}
+  ) { }
 
   private async _handleSuccess(
     message: AuthResponseSuccess,

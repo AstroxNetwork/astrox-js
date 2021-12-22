@@ -30,15 +30,27 @@ declare global {
   }
 }
 
+const FRAME_SETTING = 'height=600, width=800, top=0, right=0, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no';
+const FRAME_SETTING_PAYMENT = 'height=600, width=480, top=0, right=0, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no';
+
 export class IC extends ICWindow {
   public static async connect(connectOptions: ConnectOptions): Promise<IC> {
-    const authClient = await AuthClient.create(connectOptions);
+
+
+    const authClient = await AuthClient.create({
+      ...connectOptions,
+      idpWindowOption:
+        connectOptions.useFrame === true
+          ? FRAME_SETTING
+          : undefined
+    });
 
     const newIC = new this(authClient);
 
     const provider = connectOptions?.identityProvider ?? IDENTITY_PROVIDER_DEFAULT;
 
     newIC._setWalletProvider(connectOptions?.walletProviderUrl);
+    newIC._setUseFrame(connectOptions?.useFrame);
 
     if (await newIC.isAuthenticated()) {
       await newIC.handleAuthenticated(newIC, { ledgerCanisterId: connectOptions.ledgerCanisterId });
@@ -63,7 +75,8 @@ export class IC extends ICWindow {
   #authClient: AuthClient;
   #agent?: HttpAgent;
   #localLedger?: LedgerConnection;
-  #walletProvider?: string; // a local ledger to query balance only
+  #walletProvider?: string;
+  #useFrame?: boolean = false; // a local ledger to query balance only
   protected constructor(authClient: AuthClient) {
     super();
     this.#authClient = authClient;
@@ -88,6 +101,10 @@ export class IC extends ICWindow {
 
   private _setWalletProvider(provider?: string) {
     this.#walletProvider = provider;
+  }
+
+  private _setUseFrame(useFrame: boolean) {
+    this.#useFrame = useFrame;
   }
 
   protected getAuthClient(): AuthClient {
@@ -171,7 +188,7 @@ export class IC extends ICWindow {
     this._openWindow(
       walletProviderUrl.toString(),
       'icWindow',
-      'height=600, width=480, top=0, right=0, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no',
+      this.#useFrame ? FRAME_SETTING_PAYMENT : undefined,
     );
 
     return new Promise((resolve, reject) => {

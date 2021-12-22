@@ -7,7 +7,17 @@ export const TRANSACTION_FEE = BigInt(10_000);
 export const LEDGER_CANISTER_ID = 'ryjl3-tyaaa-aaaaa-aaaba-cai';
 export const NNS_CANISTER_ID = 'qoctq-giaaa-aaaaa-aaaea-cai';
 
-// import config from "../config";
 
-// // @ts-ignore
-// export const HOST = "HOST" in config ? config["HOST"] : undefined;
+
+export const PRINCIPAL_REGEX = /(\w{5}-){10}\w{3}/;
+export const ALPHANUM_REGEX = /^[a-zA-Z0-9]+$/;
+export const CANISTER_REGEX = /(\w{5}-){4}\w{3}/;
+export const CANISTER_MAX_LENGTH = 27;
+
+export const ADDRESS_TYPES = {
+    PRINCIPAL: 'principal',
+    ACCOUNT: 'accountId',
+    CANISTER: 'canister',
+    ERC20: 'erc20',
+    UNKNOWN: 'unknown',
+};
