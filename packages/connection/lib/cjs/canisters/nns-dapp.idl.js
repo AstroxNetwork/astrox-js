@@ -178,8 +178,7 @@ exports.default = ({ IDL }) => {
         rename_sub_account: IDL.Func([RenameSubAccountRequest], [RenameSubAccountResponse], []),
     });
 };
-const init = ({ IDL }) => {
+exports.init = ({ IDL }) => {
     return [];
 };
-exports.init = init;
 //# sourceMappingURL=nns-dapp.idl.js.map

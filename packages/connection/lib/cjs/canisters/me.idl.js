@@ -121,6 +121,5 @@ exports.default = ({ IDL }) => {
         'update_nns_wallets': IDL.Func([IDL.Text, DeviceType, IDL.Text, AccountDetails], [UpdateNNSWalletResponse], []),
     });
 };
-const init = ({ IDL }) => { return []; };
-exports.init = init;
+exports.init = ({ IDL }) => { return []; };
 //# sourceMappingURL=me.idl.js.map

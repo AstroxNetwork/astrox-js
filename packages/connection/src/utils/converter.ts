@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import { Principal } from '@dfinity/principal';
 import { sha224 } from 'js-sha256';
 import { Buffer } from 'buffer';
@@ -176,7 +177,7 @@ export const parseBalance = (balance: Balance): string => {
 
 export const balanceFromString = (
   balance: string,
-  decimal: number = 8,
+  decimal = 8,
 ): bigint => {
   const list = balance.split('.');
   const aboveZero = list[0];
@@ -200,7 +201,7 @@ export interface BalanceString {
 
 export const balanceToString = (
   balance: bigint,
-  decimal: number = 8,
+  decimal = 8,
 ): BalanceString => {
   const balanceString = balance.toString(10);
   const balanceStringLength = balanceString.length;

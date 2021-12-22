@@ -167,8 +167,6 @@ export class AuthClient {
     }
     this._delegationIdentity = DelegationIdentity.fromDelegation(key, this._chain!);
     this._identity = this._delegationIdentity;
-    console.log(this._identity);
-
     this._idpWindow?.close();
     await onSuccess?.();
     this._removeEventListener();

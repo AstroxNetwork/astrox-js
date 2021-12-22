@@ -80,8 +80,7 @@ exports.default = ({ IDL }) => {
         get_transactions: IDL.Func([GetTransactionsRequest], [GetTransactionsResponse]),
     });
 };
-const init = ({ IDL }) => {
+exports.init = ({ IDL }) => {
     return [];
 };
-exports.init = init;
 //# sourceMappingURL=nns-dapp-cert.idl.js.map

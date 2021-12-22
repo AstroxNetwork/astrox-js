@@ -76,7 +76,7 @@ export class IC extends ICWindow {
   #agent?: HttpAgent;
   #localLedger?: LedgerConnection;
   #walletProvider?: string;
-  #useFrame?: boolean = false; // a local ledger to query balance only
+  #useFrame?= false; // a local ledger to query balance only
   protected constructor(authClient: AuthClient) {
     super();
     this.#authClient = authClient;
