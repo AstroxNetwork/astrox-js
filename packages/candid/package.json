@@ -1,6 +1,6 @@
 {
   "name": "@astrox/candid",
-  "version": "0.0.36",
+  "version": "0.0.37",
   "author": "DFINITY Stiftung <sdk@astrox.org>",
   "license": "Apache-2.0",
   "description": "JavaScript and TypeScript library to work with candid interfaces",
@@ -62,7 +62,7 @@
   },
   "gitHead": "8173bb829917c941e37cd038bca972948cc58c5b",
   "dependencies": {
-    "@astrox/principal": "^0.0.36",
+    "@astrox/principal": "^0.0.37",
     "buffer": "6.0.3"
   }
 }
