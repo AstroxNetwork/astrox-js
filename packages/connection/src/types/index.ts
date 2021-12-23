@@ -92,6 +92,7 @@ export interface AuthClientLoginOptions extends AuthClientCreateOptions {
 export interface ConnectOptions extends AuthClientLoginOptions {
   ledgerCanisterId?: string;
   walletProviderUrl?: string;
+  signerProviderUrl?: string;
   useFrame: boolean;
 }
 
@@ -115,6 +116,25 @@ export interface TransactionOptions {
    */
   onError?: (error?: string) => void;
 }
+
+export interface SignerOptions {
+  /**
+   * Identity provider. By default, use the identity service.
+   */
+  signerProvider?: string | URL;
+  message: Uint8Array | string; //
+  maxTimeout?: number;
+  successTimeout?: number;
+  /**
+   * Callback once login has completed
+   */
+  onSuccess?: (value?: any) => void | Promise<void>;
+  /**
+   * Callback in case authentication fails
+   */
+  onError?: (error?: string) => void;
+}
+
 
 /**
  * Interface for persisting user authentication data
@@ -165,6 +185,42 @@ export enum PermissionsType {
   identity = 'permissions-identity',
   wallet = 'permissions-wallet',
 }
+
+export enum SignerMessageKind {
+  client = 'signer-client',
+  ready = 'signer-ready',
+  success = 'signer-client-success',
+  fail = 'signer-client-failure',
+}
+
+export interface SignerReadyMessage {
+  kind: SignerMessageKind.ready;
+}
+
+export interface SignerResponseFailure {
+  kind: SignerMessageKind.fail;
+  text: string;
+}
+
+export interface SignerResponseFailure {
+  kind: SignerMessageKind.fail;
+  text: string;
+}
+
+export interface SignerResponseSuccess {
+  kind: SignerMessageKind.success;
+  payload?: {
+    publicKey: string;
+    signature: string;
+    originPayload: {
+      message: Uint8Array;
+    };
+  };
+}
+
+
+export type SignerResponseMessage = SignerReadyMessage | SignerResponse;
+export type SignerResponse = SignerResponseSuccess | SignerResponseFailure;
 
 // Transaction Types
 export enum TransactionMessageKind {

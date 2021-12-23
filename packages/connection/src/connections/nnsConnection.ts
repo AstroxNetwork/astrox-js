@@ -12,7 +12,7 @@ import { DelegationIdentity } from '@dfinity/identity';
 import { BaseConnection, executeWithLogging, _createActor } from './baseConnection';
 import nns_idl from '../canisters/nns-dapp.idl';
 import nns_idl_cert from '../canisters/nns-dapp-cert.idl';
-import NNS_SERVICE, { AccountDetails } from '../canisters/nns-dapp';
+import NNS_SERVICE, { AccountDetails, AccountIdentifier, GetTransactionsResponse } from '../canisters/nns-dapp';
 import { NNS_CANISTER_ID } from '../utils/constants';
 import { CreateActorResult } from '../types';
 
@@ -70,64 +70,34 @@ export class NNSConnection extends BaseConnection<NNS_SERVICE> {
     return actor;
   }
 
-  // /**
-  //  * create connection with II, we need to login II before login to NNS
-  //  * only when AstroX ME linked With II, use 2 params as input
-  //  * 1. use Identity created by devices, not delegation
-  //  * 2. use II anchor that linked, will ensure NNS Dapp get the correct principal
-  //  *
-  //  * @param identity
-  //  * @param anchor
-  //  * @function {function name}
-  //  * @returns {type} {description}
-  //  */
-  // static async createConnectionWithII(
-  //   identity: SignIdentity,
-  //   anchor: string | bigint,
-  // ): Promise<NNSConnection> {
-  //   const key = Ed25519KeyIdentity.generate();
-  //   const s = await iiDelegation(
-  //     identity,
-  //     new Uint8Array(key.getPublicKey().toDer()),
-  //     anchor,
-  //     NNS_URL,
-  //     /* days */ BigInt(7) * /* hours */ BigInt(24) * /* nanoseconds */ BigInt(3600000000000),
-  //   );
-  //   const iiDelegationResult = {
-  //     kind: 'authorize-client-success',
-  //     delegations: [s],
-  //     userPublicKey: Uint8Array.from(s.userKey),
-  //   };
-  //   const storage = new NNSStorage(anchor.toString());
-  //   const delegations = iiDelegationResult.delegations.map(signedDelegation => {
-  //     return {
-  //       delegation: new Delegation(
-  //         signedDelegation.delegation.pubkey.buffer,
-  //         signedDelegation.delegation.expiration,
-  //         signedDelegation.delegation.targets,
-  //       ),
-  //       signature: signedDelegation.signature.buffer as Signature,
-  //     };
-  //   });
-  //   const delegationChain = DelegationChain.fromDelegations(
-  //     delegations,
-  //     iiDelegationResult.userPublicKey.buffer as DerEncodedPublicKey,
-  //   );
-  //   await storage.saveJson({
-  //     delegationChain: delegationChain.toJSON(),
-  //     key,
-  //   });
+  static async getTransactions(
+    {
+      nnsActor,
+      delegationIdentity,
+    }: {
+      nnsActor?: ActorSubclass<NNS_SERVICE>;
+      delegationIdentity?: DelegationIdentity;
+    },
 
-  //   const delegationResult = (await handleDelegation(iiDelegationResult, key)) as DelegationResult;
-
-  //   const actorResult = await NNSConnection.createActor(delegationResult.delegationIdentity);
-  //   return NNSConnection.createConnection(
-  //     identity,
-  //     delegationResult.delegationIdentity,
-  //     actorResult.actor,
-  //     actorResult.agent,
-  //   );
-  // }
+    {
+      page_size,
+      offset,
+      account_identifier,
+    }: {
+      page_size: number;
+      offset: number;
+      account_identifier: AccountIdentifier;
+    },
+  ): Promise<GetTransactionsResponse> {
+    const actor: ActorSubclass<NNS_SERVICE> =
+      nnsActor ?? (await NNSConnection.createActor(delegationIdentity!)).actor;
+    const result = await actor.get_transactions({
+      page_size,
+      offset,
+      account_identifier,
+    });
+    return result;
+  }
 
   /**
    * get NNS Actor, used internally

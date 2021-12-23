@@ -4,6 +4,7 @@ import LEDGER_SERVICE, {
   AccountIdentifier,
   BlockHeight,
   Memo,
+  SendArgs,
   SubAccount,
   TimeStamp,
 } from '../canisters/ledger';
@@ -14,6 +15,11 @@ import { LEDGER_CANISTER_ID } from '../utils/constants';
 import { CreateActorResult, SendOpts } from '../types';
 
 // export const canisterIdPrincipal: Principal = Principal.fromText(LEDGER_CANISTER_ID);
+export interface TransactionResponse {
+  blockHeight: bigint;
+  sendArgs: SendArgs;
+}
+
 
 export class LedgerConnection extends BaseConnection<LEDGER_SERVICE> {
   protected constructor(
@@ -126,10 +132,10 @@ export class LedgerConnection extends BaseConnection<LEDGER_SERVICE> {
         sendOpts?.created_at_time === undefined
           ? ([] as [])
           : (Array.from<TimeStamp>([
-              {
-                timestamp_nanos: BigInt(sendOpts?.created_at_time?.getTime()),
-              },
-            ]) as [TimeStamp]);
+            {
+              timestamp_nanos: BigInt(sendOpts?.created_at_time?.getTime()),
+            },
+          ]) as [TimeStamp]);
 
       const sendArgs = {
         to: to,
@@ -188,10 +194,10 @@ export class LedgerConnection extends BaseConnection<LEDGER_SERVICE> {
         sendOpts?.created_at_time === undefined
           ? ([] as [])
           : (Array.from<TimeStamp>([
-              {
-                timestamp_nanos: BigInt(sendOpts?.created_at_time?.getTime()),
-              },
-            ]) as [TimeStamp]);
+            {
+              timestamp_nanos: BigInt(sendOpts?.created_at_time?.getTime()),
+            },
+          ]) as [TimeStamp]);
 
       const sendArgs = {
         to: to,

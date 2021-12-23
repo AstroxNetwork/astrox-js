@@ -11,18 +11,26 @@ import {
   ConnectOptions,
   EventHandler,
   PermissionsType,
+  SignerMessageKind,
+  SignerOptions,
+  SignerResponseFailure,
+  SignerResponseMessage,
+  SignerResponseSuccess,
   TransactionMessageKind,
   TransactionOptions,
   TransactionResponseFailure,
   TransactionResponseMessage,
   TransactionResponseSuccess,
 } from '../types';
+import { SignedDelegation } from '@dfinity/identity';
 
 const days = BigInt(1);
 const hours = BigInt(24);
 const nanoseconds = BigInt(3600000000000);
 const WALLET_PROVIDER_DEFAULT = 'https://63k2f-nyaaa-aaaah-aakla-cai.raw.ic0.app';
 const WALLET_PROVIDER_ENDPOINT = '#transaction';
+const SIGNER_PROVIDER_DEFAULT = 'https://63k2f-nyaaa-aaaah-aakla-cai.raw.ic0.app';
+const SIGNER_PROVIDER_ENDPOINT = '#signer';
 
 declare global {
   interface Window {
@@ -50,6 +58,7 @@ export class IC extends ICWindow {
     const provider = connectOptions?.identityProvider ?? IDENTITY_PROVIDER_DEFAULT;
 
     newIC._setWalletProvider(connectOptions?.walletProviderUrl);
+    newIC._setSignerProvider(connectOptions?.signerProviderUrl);
     newIC._setUseFrame(connectOptions?.useFrame);
 
     if (await newIC.isAuthenticated()) {
@@ -76,6 +85,7 @@ export class IC extends ICWindow {
   #agent?: HttpAgent;
   #localLedger?: LedgerConnection;
   #walletProvider?: string;
+  #signerProvider?: string;
   #useFrame?= false; // a local ledger to query balance only
   protected constructor(authClient: AuthClient) {
     super();
@@ -101,6 +111,10 @@ export class IC extends ICWindow {
 
   private _setWalletProvider(provider?: string) {
     this.#walletProvider = provider;
+  }
+
+  private _setSignerProvider(provider?: string) {
+    this.#signerProvider = provider;
   }
 
   private _setUseFrame(useFrame: boolean) {
@@ -197,6 +211,68 @@ export class IC extends ICWindow {
     });
   };
 
+  public signMessage = async (options: SignerOptions): Promise<void> => {
+    const signerProviderUrl = new URL(
+      options?.signerProvider?.toString() || this.#signerProvider || SIGNER_PROVIDER_DEFAULT,
+    );
+    signerProviderUrl.hash = SIGNER_PROVIDER_ENDPOINT;
+    this._openWindow(
+      signerProviderUrl.toString(),
+      'icWindow',
+      this.#useFrame ? FRAME_SETTING_PAYMENT : undefined,
+    );
+    return new Promise((resolve, reject) => {
+      this._eventHandler = this._getSignerHandler(signerProviderUrl, resolve, reject, options);
+      window.addEventListener('message', this._eventHandler);
+    });
+  }
+
+  private _getSignerHandler(walletProviderUrl: URL,
+    resolve: (value: any) => void,
+    reject: (reason?: any) => void,
+    options: SignerOptions,): EventHandler {
+    return async (event: MessageEvent) => {
+      if (event.origin !== walletProviderUrl.origin) {
+        return;
+      }
+
+      const message = event.data as SignerResponseMessage;
+
+      switch (message.kind) {
+        case SignerMessageKind.ready: {
+          // IDP is ready. Send a message to request authorization.
+          const request: { kind: SignerMessageKind } & SignerOptions = {
+            kind: SignerMessageKind.client,
+            message: options.message,
+            maxTimeout: options.maxTimeout ?? 90,
+            successTimeout: options.successTimeout ?? 10
+          };
+          this._window?.postMessage(request, walletProviderUrl.origin);
+          break;
+        }
+        case SignerMessageKind.success:
+          // Create the delegation chain and store it.
+          try {
+            resolve(this._handleSuccess(message, options.onSuccess, options.successTimeout ?? 10));
+          } catch (err) {
+            reject(this._handleFailure((err as Error).message, options.onError));
+          }
+          break;
+        case SignerMessageKind.fail:
+          reject(
+            this._handleFailure(
+              (message as unknown as SignerResponseFailure).text,
+              options.onError,
+            ),
+          );
+          break;
+        default:
+          break;
+      }
+    };
+  }
+
+
   private _getEventHandler(
     walletProviderUrl: URL,
     resolve: (value: any) => void,
@@ -256,10 +332,10 @@ export class IC extends ICWindow {
   }
 
   private _handleSuccess(
-    value?: TransactionResponseSuccess,
-    onSuccess?: (value?: TransactionResponseSuccess) => void,
+    value?: TransactionResponseSuccess | SignerResponseSuccess,
+    onSuccess?: (value?: TransactionResponseSuccess | SignerResponseSuccess) => void,
     delay?: number
-  ): TransactionResponseSuccess | undefined {
+  ): TransactionResponseSuccess | SignerResponseSuccess | undefined {
     if (delay) {
       setTimeout(() => this._remove(), delay * 1000);
     } else {
