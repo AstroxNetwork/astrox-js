@@ -30,10 +30,10 @@ import {
 import {
   IDENTITY_PROVIDER_DEFAULT,
   IDENTITY_PROVIDER_ENDPOINT,
-  KEY_SESSIONSTORAGE_DELEGATION,
-  KEY_SESSIONSTORAGE_KEY,
-  KEY_SESSIONSTORAGE_WALLET,
-  SessionStorage,
+  KEY_ICSTORAGE_DELEGATION,
+  KEY_ICSTORAGE_KEY,
+  KEY_ICSTORAGE_WALLET,
+  ICStorage,
   _deleteStorage,
 } from './icStorage';
 
@@ -43,19 +43,19 @@ export class AuthClient {
       appId: '',
     },
   ): Promise<AuthClient> {
-    const storage = options.storage ?? new SessionStorage('ic-');
+    const storage = options.storage ?? new ICStorage('ic-');
 
     let key: null | SignIdentity = null;
     if (options.identity) {
       key = options.identity;
     } else {
-      const maybeIdentityStorage = await storage.get(KEY_SESSIONSTORAGE_KEY);
+      const maybeIdentityStorage = await storage.get(KEY_ICSTORAGE_KEY);
 
       if (maybeIdentityStorage) {
         try {
           key = Ed25519KeyIdentity.fromJSON(maybeIdentityStorage);
         } catch (e) {
-          // Ignore this, this means that the sessionStorage value isn't a valid Ed25519KeyIdentity
+          // Ignore this, this means that the ICStorage value isn't a valid Ed25519KeyIdentity
           // serialization.
         }
       }
@@ -67,8 +67,8 @@ export class AuthClient {
 
     if (key) {
       try {
-        const chainStorage = await storage.get(KEY_SESSIONSTORAGE_DELEGATION);
-        wallet = await storage.get(KEY_SESSIONSTORAGE_WALLET);
+        const chainStorage = await storage.get(KEY_ICSTORAGE_DELEGATION);
+        wallet = await storage.get(KEY_ICSTORAGE_WALLET);
 
         if (chainStorage) {
           chain = DelegationChain.fromJSON(chainStorage);
@@ -203,7 +203,7 @@ export class AuthClient {
       // Create a new key (whether or not one was in storage).
       key = Ed25519KeyIdentity.generate();
       this._key = key;
-      await this._storage.set(KEY_SESSIONSTORAGE_KEY, JSON.stringify(key));
+      await this._storage.set(KEY_ICSTORAGE_KEY, JSON.stringify(key));
     }
 
     // Create the URL of the IDP. (e.g. https://XXXX/#authorize)
@@ -265,12 +265,12 @@ export class AuthClient {
             // messes up the jest tests for some reason.
             if (this._chain) {
               await this._storage.set(
-                KEY_SESSIONSTORAGE_DELEGATION,
+                KEY_ICSTORAGE_DELEGATION,
                 JSON.stringify(this._chain.toJSON()),
               );
             }
             if (this._wallet !== undefined) {
-              await this._storage.set(KEY_SESSIONSTORAGE_WALLET, this._wallet);
+              await this._storage.set(KEY_ICSTORAGE_WALLET, this._wallet);
             }
           } catch (err) {
             reject(this._handleFailure((err as Error).message, options?.onError));

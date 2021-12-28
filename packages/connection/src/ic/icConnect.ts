@@ -23,6 +23,7 @@ import {
   TransactionResponseSuccess,
 } from '../types';
 import { SignedDelegation } from '@dfinity/identity';
+import { assert } from 'console';
 
 const days = BigInt(1);
 const hours = BigInt(24);
@@ -194,7 +195,8 @@ export class IC extends ICWindow {
   };
 
   // requestTransfer
-  public requestTransfer = async (options: TransactionOptions): Promise<void> => {
+  public requestTransfer = async (options: TransactionOptions): Promise<TransactionResponseSuccess | undefined | string> => {
+    assert(this.wallet !== undefined, 'wallet address is not found');
     const walletProviderUrl = new URL(
       options?.walletProvider?.toString() || this.#walletProvider || WALLET_PROVIDER_DEFAULT,
     );
@@ -211,7 +213,8 @@ export class IC extends ICWindow {
     });
   };
 
-  public signMessage = async (options: SignerOptions): Promise<void> => {
+  public signMessage = async (options: SignerOptions): Promise<SignerResponseSuccess | undefined | string> => {
+    assert(this.wallet !== undefined, 'wallet address is not found');
     const signerProviderUrl = new URL(
       options?.signerProvider?.toString() || this.#signerProvider || SIGNER_PROVIDER_DEFAULT,
     );
@@ -243,6 +246,7 @@ export class IC extends ICWindow {
           // IDP is ready. Send a message to request authorization.
           const request: { kind: SignerMessageKind } & SignerOptions = {
             kind: SignerMessageKind.client,
+            from: options.from ?? this.wallet,
             message: options.message,
             maxTimeout: options.maxTimeout ?? 90,
             successTimeout: options.successTimeout ?? 10
@@ -291,7 +295,7 @@ export class IC extends ICWindow {
           // IDP is ready. Send a message to request authorization.
           const request: { kind: TransactionMessageKind } & TransactionOptions = {
             kind: TransactionMessageKind.client,
-            from: options.from,
+            from: options.from ?? this.wallet,
             to: options.to,
             amount: options.amount,
             sendOpts: options.sendOpts,

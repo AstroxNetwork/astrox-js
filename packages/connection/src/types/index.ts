@@ -101,7 +101,7 @@ export interface TransactionOptions {
    * Identity provider. By default, use the identity service.
    */
   walletProvider?: string | URL;
-  from: AccountIdentifier;
+  from?: AccountIdentifier;
   to: AccountIdentifier;
   amount: bigint;
   sendOpts: SendOpts;
@@ -122,6 +122,7 @@ export interface SignerOptions {
    * Identity provider. By default, use the identity service.
    */
   signerProvider?: string | URL;
+  from?: AccountIdentifier;
   message: Uint8Array | string; //
   maxTimeout?: number;
   successTimeout?: number;
