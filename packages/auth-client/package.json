@@ -1,6 +1,6 @@
 {
   "name": "@astrox/auth-client",
-  "version": "0.0.38",
+  "version": "0.0.39",
   "author": "DFINITY Stiftung <sdk@astrox.org>",
   "license": "Apache-2.0",
   "description": "JavaScript and TypeScript library to provide a simple integration with an IC Internet Identity",
@@ -40,10 +40,10 @@
     "test:coverage": "jest --verbose --collectCoverage"
   },
   "devDependencies": {
-    "@astrox/agent": "^0.0.38",
-    "@astrox/authentication": "^0.0.38",
-    "@astrox/identity": "^0.0.38",
-    "@astrox/principal": "^0.0.38",
+    "@astrox/agent": "^0.0.39",
+    "@astrox/authentication": "^0.0.39",
+    "@astrox/identity": "^0.0.39",
+    "@astrox/principal": "^0.0.39",
     "@trust/webcrypto": "^0.9.2",
     "@types/jest": "^24.9.1",
     "@typescript-eslint/eslint-plugin": "^4.14.2",

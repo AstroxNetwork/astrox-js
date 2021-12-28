@@ -1,6 +1,6 @@
 {
   "name": "@astrox/ax-types",
-  "version": "0.0.38",
+  "version": "0.0.39",
   "author": "AstroX Network",
   "license": "MIT",
   "description": "TypeScript definitions for ax",
