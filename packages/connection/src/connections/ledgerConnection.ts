@@ -76,11 +76,13 @@ export class LedgerConnection extends BaseConnection<LEDGER_SERVICE> {
   static async createActor(
     delegationIdentity: DelegationIdentity,
     ledgerCanisterId?: string,
+    host?: string,
   ): Promise<CreateActorResult<LEDGER_SERVICE>> {
     const actor = await _createActor<LEDGER_SERVICE>(
       ledger_idl,
       ledgerCanisterId ?? LEDGER_CANISTER_ID,
       delegationIdentity,
+      host,
     );
     return actor;
   }

@@ -23,7 +23,6 @@ import {
   TransactionResponseSuccess,
 } from '../types';
 import { SignedDelegation } from '@dfinity/identity';
-import { assert } from 'console';
 
 const days = BigInt(1);
 const hours = BigInt(24);
@@ -43,54 +42,72 @@ const FRAME_SETTING = 'height=600, width=800, top=0, right=0, toolbar=no, menuba
 const FRAME_SETTING_PAYMENT = 'height=600, width=480, top=0, right=0, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no';
 
 export class IC extends ICWindow {
-  public static async connect(connectOptions: ConnectOptions): Promise<IC> {
-
-
-    const authClient = await AuthClient.create({
-      ...connectOptions,
-      idpWindowOption:
-        connectOptions.useFrame === true
-          ? FRAME_SETTING
-          : undefined
-    });
-
-    const newIC = new this(authClient);
-
-    const provider = connectOptions?.identityProvider ?? IDENTITY_PROVIDER_DEFAULT;
-
-    newIC._setWalletProvider(connectOptions?.walletProviderUrl);
-    newIC._setSignerProvider(connectOptions?.signerProviderUrl);
-    newIC._setUseFrame(connectOptions?.useFrame);
-
-    if (await newIC.isAuthenticated()) {
-      await newIC.handleAuthenticated(newIC, { ledgerCanisterId: connectOptions.ledgerCanisterId });
-      await connectOptions?.onAuthenticated?.(newIC);
-      return newIC;
-    }
-    await newIC.getAuthClient().login({
-      identityProvider: provider,
-      // Maximum authorization expiration is 8 days
-      maxTimeToLive: connectOptions?.maxTimeToLive ?? days * hours * nanoseconds,
-      permissions: connectOptions?.permissions ?? [PermissionsType.identity],
-      onSuccess: async () => {
-        await newIC.handleAuthenticated(newIC, {
-          ledgerCanisterId: connectOptions.ledgerCanisterId,
-        });
-        (await connectOptions?.onSuccess?.()) ?? (await connectOptions?.onAuthenticated?.(newIC));
-      },
-      onError: newIC.handleError,
-    });
-    return newIC;
-  }
   #authClient: AuthClient;
   #agent?: HttpAgent;
   #localLedger?: LedgerConnection;
   #walletProvider?: string;
   #signerProvider?: string;
-  #useFrame?= false; // a local ledger to query balance only
-  protected constructor(authClient: AuthClient) {
+  #useFrame? = false; // a local ledger to query balance only
+
+  protected constructor(authClient: AuthClient, agent: HttpAgent) {
     super();
     this.#authClient = authClient;
+    this.#agent = agent;
+    this.injectWindow();
+  }
+
+  public static async create(config: any) {
+    const authClient = await AuthClient.create({
+      ...config,
+      idpWindowOption:
+        config.useFrame === true
+          ? FRAME_SETTING
+          : undefined,
+    });
+
+    const identity = authClient.getIdentity();
+    const agent = new HttpAgent({ identity });
+    const newIC = new this(authClient, agent);
+
+    if (config.dev) {
+      await agent.fetchRootKey();
+    }
+
+    newIC._setWalletProvider(config?.walletProviderUrl);
+    newIC._setSignerProvider(config?.signerProviderUrl);
+    newIC._setUseFrame(config?.useFrame);
+
+    if (await newIC.isAuthenticated()) {
+      await newIC.handleAuthenticated({
+        ledgerCanisterId: config.ledgerCanisterId ?? 'ryjl3-tyaaa-aaaaa-aaaba-cai',
+        ledgerHost: config.ledgerHost ?? 'https://boundary.ic0.app/',
+      });
+      await config?.onAuthenticated?.(newIC);
+    }
+
+    return newIC;
+  }
+
+  public async connect(connectOptions: ConnectOptions): Promise<IC> {
+    const provider = connectOptions?.identityProvider ?? IDENTITY_PROVIDER_DEFAULT;
+
+    await new Promise((resolve, reject) => {
+      this.getAuthClient().login({
+        identityProvider: provider,
+        // Maximum authorization expiration is 8 days
+        maxTimeToLive: connectOptions?.maxTimeToLive ?? days * hours * nanoseconds,
+        permissions: connectOptions?.permissions ?? [PermissionsType.identity],
+        onSuccess: async () => {
+          await this.handleAuthenticated({
+            ledgerCanisterId: connectOptions.ledgerCanisterId,
+          });
+          (await connectOptions?.onSuccess?.()) ?? (await connectOptions?.onAuthenticated?.(this));
+          resolve(undefined);
+        },
+        onError: this.handleError,
+      });
+    });
+    return this;
   }
 
   public async isAuthenticated(): Promise<boolean> {
@@ -135,51 +152,36 @@ export class IC extends ICWindow {
       throw Error('Wallet address is not found');
     }
     if (this.#localLedger === undefined) {
-      throw Error('Ledger connection faild');
+      throw Error('Ledger connection failed');
     }
     const result = await this.#localLedger?.getBalance(this.wallet!);
     return result;
   };
 
   public handleAuthenticated = async (
-    ic: IC,
-    { ledgerCanisterId }: { ledgerCanisterId?: string },
-  ): Promise<IC> => {
-    const identity = ic.getAuthClient().getIdentity();
-
-    this.#agent = new HttpAgent({ identity });
-
-    if (!process.env.isProduction) {
-      await this.#agent.fetchRootKey();
-    }
+    { ledgerCanisterId, ledgerHost }: { ledgerCanisterId?: string, ledgerHost?: string },
+  ): Promise<void> => {
 
     const actorResult = await LedgerConnection.createActor(
-      ic.getAuthClient().getDelegationIdentity()!,
+      this.getAuthClient().getDelegationIdentity()!,
       ledgerCanisterId,
+      ledgerHost,
     );
 
     this.#localLedger = LedgerConnection.createConnection(
-      ic.getAuthClient().getInnerKey()!,
-      ic.getAuthClient().getDelegationIdentity()!,
+      this.getAuthClient().getInnerKey()!,
+      this.getAuthClient().getDelegationIdentity()!,
       ledgerCanisterId,
       actorResult.actor,
       this.#agent,
     );
-
-    this.injectWindow();
-    return new IC(ic.getAuthClient());
   };
 
-  private injectWindow(ic?: IC): void {
+  private injectWindow(): void {
     if (window.ic !== undefined) {
-      let plug;
-      if (window.ic.plug !== undefined) {
-        plug = window.ic.plug;
-      }
-      window.ic = ic ?? this;
-      window.ic.plug = plug;
+      window.ic.astrox = this;
     } else {
-      window.ic = ic ?? this;
+      window.ic = { astrox: this };
     }
   }
 
@@ -196,7 +198,7 @@ export class IC extends ICWindow {
 
   // requestTransfer
   public requestTransfer = async (options: TransactionOptions): Promise<TransactionResponseSuccess | undefined | string> => {
-    assert(this.wallet !== undefined, 'wallet address is not found');
+    console.assert(this.wallet !== undefined, 'wallet address is not found');
     const walletProviderUrl = new URL(
       options?.walletProvider?.toString() || this.#walletProvider || WALLET_PROVIDER_DEFAULT,
     );
@@ -214,7 +216,7 @@ export class IC extends ICWindow {
   };
 
   public signMessage = async (options: SignerOptions): Promise<SignerResponseSuccess | undefined | string> => {
-    assert(this.wallet !== undefined, 'wallet address is not found');
+    console.assert(this.wallet !== undefined, 'wallet address is not found');
     const signerProviderUrl = new URL(
       options?.signerProvider?.toString() || this.#signerProvider || SIGNER_PROVIDER_DEFAULT,
     );
@@ -228,12 +230,12 @@ export class IC extends ICWindow {
       this._eventHandler = this._getSignerHandler(signerProviderUrl, resolve, reject, options);
       window.addEventListener('message', this._eventHandler);
     });
-  }
+  };
 
   private _getSignerHandler(walletProviderUrl: URL,
-    resolve: (value: any) => void,
-    reject: (reason?: any) => void,
-    options: SignerOptions,): EventHandler {
+                            resolve: (value: any) => void,
+                            reject: (reason?: any) => void,
+                            options: SignerOptions): EventHandler {
     return async (event: MessageEvent) => {
       if (event.origin !== walletProviderUrl.origin) {
         return;
@@ -249,7 +251,7 @@ export class IC extends ICWindow {
             from: options.from ?? this.wallet,
             message: options.message,
             maxTimeout: options.maxTimeout ?? 90,
-            successTimeout: options.successTimeout ?? 10
+            successTimeout: options.successTimeout ?? 10,
           };
           this._window?.postMessage(request, walletProviderUrl.origin);
           break;
@@ -300,7 +302,7 @@ export class IC extends ICWindow {
             amount: options.amount,
             sendOpts: options.sendOpts,
             maxTimeout: options.maxTimeout ?? 90,
-            successTimeout: options.successTimeout ?? 10
+            successTimeout: options.successTimeout ?? 10,
           };
           this._window?.postMessage(request, walletProviderUrl.origin);
           break;
@@ -326,6 +328,7 @@ export class IC extends ICWindow {
       }
     };
   }
+
   private _handleFailure(
     errorMessage?: string,
     onError?: (error?: string) => void,
@@ -338,7 +341,7 @@ export class IC extends ICWindow {
   private _handleSuccess(
     value?: TransactionResponseSuccess | SignerResponseSuccess,
     onSuccess?: (value?: TransactionResponseSuccess | SignerResponseSuccess) => void,
-    delay?: number
+    delay?: number,
   ): TransactionResponseSuccess | SignerResponseSuccess | undefined {
     if (delay) {
       setTimeout(() => this._remove(), delay * 1000);

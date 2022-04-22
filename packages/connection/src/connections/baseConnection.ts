@@ -61,8 +61,9 @@ export async function _createActor<T>(
   interfaceFactory: InterfaceFactory,
   canisterId: string,
   identity?: SignIdentity,
+  host?: string,
 ): Promise<CreateActorResult<T>> {
-  const agent = new HttpAgent({ identity });
+  const agent = new HttpAgent({ identity, host });
   // Only fetch the root key when we're not in prod
   if (process.env.II_ENV === 'development') {
     await agent.fetchRootKey();
@@ -92,11 +93,13 @@ export class BaseConnection<T> implements AbstractConnection<T> {
     interfaceFactory: InterfaceFactory,
     date?: Date,
   ): Promise<ActorSubclass<T>> {
-    for (const { delegation } of this.delegationIdentity.getDelegation().delegations) {
-      // prettier-ignore
-      if (+new Date(Number(delegation.expiration / BigInt(1000000))) <= +Date.now()) {
-        this.actor = undefined;
-        break;
+    if (this.delegationIdentity) {
+      for (const { delegation } of this.delegationIdentity.getDelegation().delegations) {
+        // prettier-ignore
+        if (+new Date(Number(delegation.expiration / BigInt(1000000))) <= +Date.now()) {
+          this.actor = undefined;
+          break;
+        }
       }
     }
     if (this.actor === undefined) {

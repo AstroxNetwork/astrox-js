@@ -15,9 +15,9 @@ export function getDefaultAgent(): Agent {
       ? typeof global === 'undefined'
         ? typeof self === 'undefined'
           ? undefined
-          : self.ic.agent
-        : global.ic.agent
-      : window.ic.agent;
+          : self.ic.astrox?.agent
+        : global.ic.astrox?.agent
+      : window.ic.astrox?.agent;
 
   if (!agent) {
     throw new Error('No Agent could be found.');

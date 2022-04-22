@@ -14,7 +14,7 @@ export async function _deleteStorage(storage: AuthClientStorage) {
 }
 
 export class ICStorage implements AuthClientStorage {
-  constructor(public readonly prefix = 'ic-', private readonly _localStorage?: Storage) { }
+  constructor(public readonly prefix = 'astrox-', private readonly _localStorage?: Storage) { }
 
   public get(key: string): Promise<string | null> {
     return Promise.resolve(this._getICStorage().getItem(this.prefix + key));
