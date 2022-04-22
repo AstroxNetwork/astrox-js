@@ -88,7 +88,7 @@ async function _deleteStorage(storage: AuthClientStorage) {
 }
 
 export class LocalStorage implements AuthClientStorage {
-  constructor(public readonly prefix = 'ic-', private readonly _localStorage?: Storage) {}
+  constructor(public readonly prefix = 'astrox-', private readonly _localStorage?: Storage) {}
 
   public get(key: string): Promise<string | null> {
     return Promise.resolve(this._getLocalStorage().getItem(this.prefix + key));
@@ -152,7 +152,7 @@ type AuthResponse = AuthResponseSuccess | AuthResponseFailure;
 
 export class AuthClient {
   public static async create(options: AuthClientCreateOptions = {}): Promise<AuthClient> {
-    const storage = options.storage ?? new LocalStorage('ic-');
+    const storage = options.storage ?? new LocalStorage('astrox-');
 
     let key: null | SignIdentity = null;
     if (options.identity) {

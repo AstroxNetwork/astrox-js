@@ -43,7 +43,7 @@ export class AuthClient {
       appId: '',
     },
   ): Promise<AuthClient> {
-    const storage = options.storage ?? new ICStorage('ic-');
+    const storage = options.storage ?? new ICStorage('astrox-');
 
     let key: null | SignIdentity = null;
     if (options.identity) {
@@ -114,7 +114,8 @@ export class AuthClient {
     private _idpWindow?: Window,
     // The event handler for processing events from the IdP.
     private _eventHandler?: (event: MessageEvent) => void,
-  ) { }
+  ) {
+  }
 
   private async _handleSuccess(
     message: AuthResponseSuccess,
@@ -142,6 +143,8 @@ export class AuthClient {
       );
       this._chain = idDelegationChain;
       this._wallet = (message as MeAuthResponseSuccess)['wallet'];
+      // TODO: get this when signed in already
+      console.log({ message });
     } else {
       const iiDelegations = (message as DelegationResult).delegations.map(signedDelegation => {
         return {
