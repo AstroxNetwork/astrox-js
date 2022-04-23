@@ -20,7 +20,6 @@ export interface TransactionResponse {
   sendArgs: SendArgs;
 }
 
-
 export class LedgerConnection extends BaseConnection<LEDGER_SERVICE> {
   protected constructor(
     public identity: SignIdentity,
@@ -70,6 +69,7 @@ export class LedgerConnection extends BaseConnection<LEDGER_SERVICE> {
    * @param delegationIdentity
    * @param canisterId
    * @param ledgerCanisterId
+   * @param host
    * @function {function name}
    * @returns {type} {description}
    */
@@ -134,10 +134,10 @@ export class LedgerConnection extends BaseConnection<LEDGER_SERVICE> {
         sendOpts?.created_at_time === undefined
           ? ([] as [])
           : (Array.from<TimeStamp>([
-            {
-              timestamp_nanos: BigInt(sendOpts?.created_at_time?.getTime()),
-            },
-          ]) as [TimeStamp]);
+              {
+                timestamp_nanos: BigInt(sendOpts?.created_at_time?.getTime()),
+              },
+            ]) as [TimeStamp]);
 
       const sendArgs = {
         to: to,
@@ -196,10 +196,10 @@ export class LedgerConnection extends BaseConnection<LEDGER_SERVICE> {
         sendOpts?.created_at_time === undefined
           ? ([] as [])
           : (Array.from<TimeStamp>([
-            {
-              timestamp_nanos: BigInt(sendOpts?.created_at_time?.getTime()),
-            },
-          ]) as [TimeStamp]);
+              {
+                timestamp_nanos: BigInt(sendOpts?.created_at_time?.getTime()),
+              },
+            ]) as [TimeStamp]);
 
       const sendArgs = {
         to: to,

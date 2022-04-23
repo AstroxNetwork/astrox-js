@@ -9,11 +9,7 @@ import fetch from 'cross-fetch';
 //   Timestamp,
 // } from 'src/frontend/generated/nns-dapp';
 import { NET_ID, ROSETTA_URL } from '../../utils/constants';
-import {
-  formatAssetBySymbol,
-  parseBalance,
-  TokenSymbol,
-} from '../../utils/converter';
+import { formatAssetBySymbol, parseBalance, TokenSymbol } from '../../utils/converter';
 import { TransactionResponse } from '../../connections/ledgerConnection';
 import { NNSConnection as nns } from '../../connections/nnsConnection';
 import { GetTransactionsResponse, Send, Timestamp } from 'src/canisters/nns-dapp';
@@ -125,7 +121,7 @@ const getTransactionInfo = (
     },
   };
 
-  operations.forEach((operation) => {
+  operations.forEach(operation => {
     const value = BigInt(operation.amount.value);
     const { decimals } = operation.amount.currency;
     const amount = parseBalance({ value: value.toString(), decimals });
@@ -156,8 +152,7 @@ const getTransactionInfo = (
     ...transaction,
     caller: transaction.details.from,
     hash,
-    timestamp:
-      ts !== undefined ? (BigInt(ts) / BigInt(MILI_PER_SECOND)).toString() : '',
+    timestamp: ts !== undefined ? (BigInt(ts) / BigInt(MILI_PER_SECOND)).toString() : '',
     block_height: bh !== undefined ? BigInt(bh).toString() : '',
     memo: mm !== undefined ? BigInt(mm).toString() : '',
     lockTime: lt !== undefined ? BigInt(lt).toString() : '',
@@ -177,11 +172,10 @@ export const getICPTransactions = async (
     }),
     headers: {
       'Content-Type': 'application/json',
-      Accept: '*/*',
+      'Accept': '*/*',
     },
   });
-  if (!response.ok)
-    throw Error(`GET_TRANSACTIONS_FAILS: ${response.statusText}`);
+  if (!response.ok) throw Error(`GET_TRANSACTIONS_FAILS: ${response.statusText}`);
   const { transactions, total_count } = await response.json();
   const transactionsInfo = transactions.map(({ transaction }: { transaction: any }) =>
     getTransactionInfo(accountId, transaction),
@@ -203,10 +197,7 @@ export const getTransactions = async (
   return result;
 };
 
-export const getICPTransactionsByBlock = async (
-  fromAccount: string,
-  blockHeight: bigint,
-) => {
+export const getICPTransactionsByBlock = async (fromAccount: string, blockHeight: bigint) => {
   try {
     const response = await fetch(`${ROSETTA_URL}/block`, {
       method: 'POST',
@@ -216,11 +207,10 @@ export const getICPTransactionsByBlock = async (
       }),
       headers: {
         'Content-Type': 'application/json',
-        Accept: '*/*',
+        'Accept': '*/*',
       },
     });
-    if (!response.ok)
-      throw Error(`GET_TRANSACTIONS_FAILS: ${response.statusText}`);
+    if (!response.ok) throw Error(`GET_TRANSACTIONS_FAILS: ${response.statusText}`);
     const { block } = await response.json();
     const { transactions } = block;
     if (transactions === undefined || block === undefined) {
@@ -253,17 +243,16 @@ export const getExactTransaction = (
 
   console.log({ singleResponse, txns });
 
-  const found = transactions.find((val) => {
+  const found = transactions.find(val => {
     return created_at_time[0] !== undefined
       ? (val.timestamp as Timestamp).timestamp_nanos >
-      (created_at_time[0] as Timestamp).timestamp_nanos
+          (created_at_time[0] as Timestamp).timestamp_nanos
       : true &&
-      val.block_height === blockHeight &&
-      val.memo === memo &&
-      JSON.stringify(val.transaction_type[0]) ===
-      JSON.stringify({ Send: null }) &&
-      (val.transfer as { Send: Send }).Send.amount.e8s === amount.e8s &&
-      (val.transfer as { Send: Send }).Send.to === to;
+          val.block_height === blockHeight &&
+          val.memo === memo &&
+          JSON.stringify(val.transaction_type[0]) === JSON.stringify({ Send: null }) &&
+          (val.transfer as { Send: Send }).Send.amount.e8s === amount.e8s &&
+          (val.transfer as { Send: Send }).Send.to === to;
   });
   if (found) {
     const res = {
@@ -291,7 +280,7 @@ export const getExactTransaction = (
       },
       caller: fromAccount,
       block_height: blockHeight.toString(),
-      memo: memo!.toString(),
+      memo: memo.toString(),
       lockTime: '',
     };
     return res;
@@ -312,69 +301,19 @@ export const getTransactionFromRosseta = (
   const { blockHeight } = singleResponse;
   const { transactions } = txns;
 
-  console.log({ singleResponse, transactions });
-
-  const found = transactions.find((val) => {
+  const found = transactions.find(val => {
     return created_at_time[0] !== undefined
-      ? val.timestamp.length <
-        (created_at_time[0] as Timestamp).timestamp_nanos.toString().length
+      ? val.timestamp.length < (created_at_time[0] as Timestamp).timestamp_nanos.toString().length
         ? BigInt(val.timestamp) * BigInt(1000000) >
-        (created_at_time[0] as Timestamp).timestamp_nanos
-        : BigInt(val.timestamp) >
-        (created_at_time[0] as Timestamp).timestamp_nanos
+          (created_at_time[0] as Timestamp).timestamp_nanos
+        : BigInt(val.timestamp) > (created_at_time[0] as Timestamp).timestamp_nanos
       : true &&
-      BigInt(val.block_height) === blockHeight &&
-      BigInt(val.memo) === memo &&
-      val.details.to === to &&
-      val.details.amount ===
-      formatAssetBySymbol(
-        amount!.e8s,
-        val.details.currency!.symbol,
-      )?.amount.toString() &&
-      val.caller === fromAccount;
+          BigInt(val.block_height) === blockHeight &&
+          BigInt(val.memo) === memo &&
+          val.details.to === to &&
+          val.details.amount ===
+            formatAssetBySymbol(amount.e8s, val.details.currency!.symbol)?.amount.toString() &&
+          val.caller === fromAccount;
   });
   return found;
-};
-
-const aaa = {
-  transaction_identifier: {
-    hash: 'df8576aa9be05b561dae1b7f706d109789cf25b895d29b3a1d7da2df92247d97',
-  },
-  operations: [
-    {
-      type: 'TRANSACTION',
-      operation_identifier: { index: 0 },
-      status: 'COMPLETED',
-      account: {
-        address:
-          'da5fd722e22c4970b4347d41873ba86c51f87ee32f271d6762fc49627eeecb71',
-      },
-      amount: { value: -100000, currency: { symbol: 'ICP', decimals: 8 } },
-    },
-    {
-      type: 'TRANSACTION',
-      operation_identifier: { index: 1 },
-      status: 'COMPLETED',
-      account: {
-        address:
-          '848753b6fac50019dffc34ead1af095863405b3cce463352c1ecf3109ada4b23',
-      },
-      amount: { value: 100000, currency: { symbol: 'ICP', decimals: 8 } },
-    },
-    {
-      type: 'FEE',
-      operation_identifier: { index: 2 },
-      status: 'COMPLETED',
-      account: {
-        address:
-          'da5fd722e22c4970b4347d41873ba86c51f87ee32f271d6762fc49627eeecb71',
-      },
-      amount: { value: -10000, currency: { symbol: 'ICP', decimals: 8 } },
-    },
-  ],
-  metadata: {
-    block_height: 1680083,
-    memo: 22380256,
-    timestamp: 1639810289340003912,
-  },
 };

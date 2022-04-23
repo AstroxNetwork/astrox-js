@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/require-returns */
 import { sha224 as jsSha224 } from 'js-sha256';
 
 /**
