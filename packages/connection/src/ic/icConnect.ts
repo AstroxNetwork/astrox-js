@@ -100,6 +100,7 @@ export class IC extends ICWindow {
         onSuccess: async () => {
           await this.handleAuthenticated({
             ledgerCanisterId: connectOptions.ledgerCanisterId,
+            ledgerHost: connectOptions.ledgerHost ?? 'https://boundary.ic0.app/',
           });
           (await connectOptions?.onSuccess?.()) ?? (await connectOptions?.onAuthenticated?.(this));
           resolve(undefined);
