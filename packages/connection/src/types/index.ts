@@ -91,6 +91,7 @@ export interface AuthClientLoginOptions extends AuthClientCreateOptions {
 
 export interface ConnectOptions extends AuthClientLoginOptions {
   ledgerCanisterId?: string;
+  ledgerHost?: string;
   walletProviderUrl?: string;
   signerProviderUrl?: string;
   useFrame: boolean;
