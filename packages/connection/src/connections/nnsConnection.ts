@@ -12,7 +12,11 @@ import { DelegationIdentity } from '@dfinity/identity';
 import { BaseConnection, executeWithLogging, _createActor } from './baseConnection';
 import nns_idl from '../canisters/nns-dapp.idl';
 import nns_idl_cert from '../canisters/nns-dapp-cert.idl';
-import NNS_SERVICE, { AccountDetails, AccountIdentifier, GetTransactionsResponse } from '../canisters/nns-dapp';
+import NNS_SERVICE, {
+  AccountDetails,
+  AccountIdentifier,
+  GetTransactionsResponse,
+} from '../canisters/nns-dapp';
 import { NNS_CANISTER_ID } from '../utils/constants';
 import { CreateActorResult } from '../types';
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import type { Principal } from '@dfinity/principal';
 export type CredentialId = Array<number>;
 export interface Delegation {
