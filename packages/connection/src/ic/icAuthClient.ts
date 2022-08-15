@@ -251,6 +251,7 @@ export class AuthClient {
             sessionPublicKey: new Uint8Array(this._key?.getPublicKey().toDer()!),
             maxTimeToLive: options?.maxTimeToLive,
             permissions: options?.permissions ?? [PermissionsType.identity],
+            delegationTargets: options?.delegationTargets ?? [],
             appId: this._appId,
           };
           this._idpWindow?.postMessage(request, identityProviderUrl.origin);
@@ -264,6 +265,7 @@ export class AuthClient {
             // Setting the storage is moved out of _handleSuccess to make
             // it a sync function. Having _handleSuccess as an async function
             // messes up the jest tests for some reason.
+            // todo: targets tojson
             if (this._chain) {
               await this._storage.set(
                 KEY_ICSTORAGE_DELEGATION,

@@ -97,6 +97,7 @@ export class IC extends ICWindow {
         // Maximum authorization expiration is 8 days
         maxTimeToLive: connectOptions?.maxTimeToLive ?? days * hours * nanoseconds,
         permissions: connectOptions?.permissions ?? [PermissionsType.identity],
+        delegationTargets:  connectOptions?.delegationTargets,
         onSuccess: async () => {
           await this.handleAuthenticated({
             ledgerCanisterId: connectOptions.ledgerCanisterId,

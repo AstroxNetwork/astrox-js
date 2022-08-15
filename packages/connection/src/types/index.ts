@@ -70,6 +70,7 @@ export interface AuthClientLoginOptions extends AuthClientCreateOptions {
   identityProvider?: string | URL;
 
   permissions?: PermissionsType[];
+  delegationTargets?: Principal[];
   /**
    * Experiation of the authentication
    */
@@ -95,6 +96,7 @@ export interface ConnectOptions extends AuthClientLoginOptions {
   walletProviderUrl?: string;
   signerProviderUrl?: string;
   useFrame: boolean;
+ 
 }
 
 export interface TransactionOptions {
@@ -153,6 +155,7 @@ export interface InternetIdentityAuthRequest {
   kind: 'authorize-client';
   sessionPublicKey: Uint8Array;
   permissions?: PermissionsType[];
+  delegationTargets?: Principal[];
   maxTimeToLive?: bigint;
   appId?: string;
 }
