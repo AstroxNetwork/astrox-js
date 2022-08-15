@@ -9,6 +9,7 @@ import {
   SignIdentity,
 } from '@dfinity/agent';
 import { isDelegationValid } from '@dfinity/authentication';
+import { Principal } from '@dfinity/principal';
 import {
   Delegation,
   DelegationChain,
@@ -114,8 +115,7 @@ export class AuthClient {
     private _idpWindow?: Window,
     // The event handler for processing events from the IdP.
     private _eventHandler?: (event: MessageEvent) => void,
-  ) {
-  }
+  ) {}
 
   private async _handleSuccess(
     message: AuthResponseSuccess,
@@ -130,7 +130,9 @@ export class AuthClient {
           delegation: new Delegation(
             signedDelegation.delegation.pubkey.buffer,
             signedDelegation.delegation.expiration,
-            signedDelegation.delegation.targets,
+            signedDelegation.delegation.targets && signedDelegation.delegation.targets.length > 0
+              ? signedDelegation.delegation.targets?.map(t => Principal.fromText(t))
+              : [],
           ),
           signature: signedDelegation.signature.buffer as Signature,
         };
@@ -149,7 +151,9 @@ export class AuthClient {
           delegation: new Delegation(
             signedDelegation.delegation.pubkey.buffer,
             signedDelegation.delegation.expiration,
-            signedDelegation.delegation.targets,
+            signedDelegation.delegation.targets && signedDelegation.delegation.targets.length > 0
+              ? signedDelegation.delegation.targets?.map(t => Principal.fromText(t))
+              : [],
           ),
           signature: signedDelegation.signature.buffer as Signature,
         };

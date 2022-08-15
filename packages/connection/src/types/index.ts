@@ -70,7 +70,7 @@ export interface AuthClientLoginOptions extends AuthClientCreateOptions {
   identityProvider?: string | URL;
 
   permissions?: PermissionsType[];
-  delegationTargets?: Principal[];
+  delegationTargets?: string[];
   /**
    * Experiation of the authentication
    */
@@ -96,7 +96,6 @@ export interface ConnectOptions extends AuthClientLoginOptions {
   walletProviderUrl?: string;
   signerProviderUrl?: string;
   useFrame: boolean;
- 
 }
 
 export interface TransactionOptions {
@@ -139,7 +138,6 @@ export interface SignerOptions {
   onError?: (error?: string) => void;
 }
 
-
 /**
  * Interface for persisting user authentication data
  */
@@ -155,7 +153,7 @@ export interface InternetIdentityAuthRequest {
   kind: 'authorize-client';
   sessionPublicKey: Uint8Array;
   permissions?: PermissionsType[];
-  delegationTargets?: Principal[];
+  delegationTargets?: string[];
   maxTimeToLive?: bigint;
   appId?: string;
 }
@@ -165,7 +163,7 @@ export interface DelegationResult {
     delegation: {
       pubkey: Uint8Array;
       expiration: bigint;
-      targets?: Principal[];
+      targets?: string[];
     };
     signature: Uint8Array;
   }[];
@@ -222,7 +220,6 @@ export interface SignerResponseSuccess {
     };
   };
 }
-
 
 export type SignerResponseMessage = SignerReadyMessage | SignerResponse;
 export type SignerResponse = SignerResponseSuccess | SignerResponseFailure;
