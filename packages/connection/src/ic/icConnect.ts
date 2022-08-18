@@ -38,8 +38,10 @@ declare global {
   }
 }
 
-const FRAME_SETTING = 'height=600, width=800, top=0, right=0, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no';
-const FRAME_SETTING_PAYMENT = 'height=600, width=480, top=0, right=0, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no';
+const FRAME_SETTING =
+  'height=600, width=800, top=0, right=0, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no';
+const FRAME_SETTING_PAYMENT =
+  'height=600, width=480, top=0, right=0, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no';
 
 export class IC extends ICWindow {
   #authClient: AuthClient;
@@ -59,10 +61,7 @@ export class IC extends ICWindow {
   public static async create(config: any) {
     const authClient = await AuthClient.create({
       ...config,
-      idpWindowOption:
-        config.useFrame === true
-          ? FRAME_SETTING
-          : undefined,
+      idpWindowOption: config.useFrame === true ? FRAME_SETTING : undefined,
     });
 
     const identity = authClient.getIdentity();
@@ -97,7 +96,7 @@ export class IC extends ICWindow {
         // Maximum authorization expiration is 8 days
         maxTimeToLive: connectOptions?.maxTimeToLive ?? days * hours * nanoseconds,
         permissions: connectOptions?.permissions ?? [PermissionsType.identity],
-        delegationTargets:  connectOptions?.delegationTargets,
+        delegationTargets: connectOptions?.delegationTargets,
         onSuccess: async () => {
           await this.handleAuthenticated({
             ledgerCanisterId: connectOptions.ledgerCanisterId,
@@ -127,6 +126,10 @@ export class IC extends ICWindow {
 
   public get wallet(): string | undefined {
     return this.#authClient.wallet;
+  }
+
+  public get delegationTargets(): string[] {
+    return this.#authClient.getDelegateTargets();
   }
 
   private _setWalletProvider(provider?: string) {
@@ -160,10 +163,13 @@ export class IC extends ICWindow {
     return result;
   };
 
-  public handleAuthenticated = async (
-    { ledgerCanisterId, ledgerHost }: { ledgerCanisterId?: string, ledgerHost?: string },
-  ): Promise<void> => {
-
+  public handleAuthenticated = async ({
+    ledgerCanisterId,
+    ledgerHost,
+  }: {
+    ledgerCanisterId?: string;
+    ledgerHost?: string;
+  }): Promise<void> => {
     const actorResult = await LedgerConnection.createActor(
       this.getAuthClient().getDelegationIdentity()!,
       ledgerCanisterId,
@@ -199,7 +205,9 @@ export class IC extends ICWindow {
   };
 
   // requestTransfer
-  public requestTransfer = async (options: TransactionOptions): Promise<TransactionResponseSuccess | undefined | string> => {
+  public requestTransfer = async (
+    options: TransactionOptions,
+  ): Promise<TransactionResponseSuccess | undefined | string> => {
     console.assert(this.wallet !== undefined, 'wallet address is not found');
     const walletProviderUrl = new URL(
       options?.walletProvider?.toString() || this.#walletProvider || WALLET_PROVIDER_DEFAULT,
@@ -217,7 +225,9 @@ export class IC extends ICWindow {
     });
   };
 
-  public signMessage = async (options: SignerOptions): Promise<SignerResponseSuccess | undefined | string> => {
+  public signMessage = async (
+    options: SignerOptions,
+  ): Promise<SignerResponseSuccess | undefined | string> => {
     console.assert(this.wallet !== undefined, 'wallet address is not found');
     const signerProviderUrl = new URL(
       options?.signerProvider?.toString() || this.#signerProvider || SIGNER_PROVIDER_DEFAULT,
@@ -234,10 +244,12 @@ export class IC extends ICWindow {
     });
   };
 
-  private _getSignerHandler(walletProviderUrl: URL,
-                            resolve: (value: any) => void,
-                            reject: (reason?: any) => void,
-                            options: SignerOptions): EventHandler {
+  private _getSignerHandler(
+    walletProviderUrl: URL,
+    resolve: (value: any) => void,
+    reject: (reason?: any) => void,
+    options: SignerOptions,
+  ): EventHandler {
     return async (event: MessageEvent) => {
       if (event.origin !== walletProviderUrl.origin) {
         return;
@@ -279,7 +291,6 @@ export class IC extends ICWindow {
       }
     };
   }
-
 
   private _getEventHandler(
     walletProviderUrl: URL,
