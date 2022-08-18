@@ -102,6 +102,7 @@ export class AuthClient {
   }
 
   private _delegationIdentity?: DelegationIdentity;
+  private _delegationTargets: string[] = [];
 
   protected constructor(
     private _identity: Identity,
@@ -126,13 +127,20 @@ export class AuthClient {
       const idDelegations = (
         (message as MeAuthResponseSuccess)['identity'] as DelegationResult
       ).delegations.map(signedDelegation => {
+        const targets =
+          signedDelegation.delegation.targets && signedDelegation.delegation.targets.length > 0
+            ? signedDelegation.delegation.targets?.map(t => Principal.fromText(t))
+            : undefined;
+        if (targets) {
+          this._delegationTargets = [
+            ...new Set(this._delegationTargets.concat(targets.map(e => e.toText()))),
+          ];
+        }
         return {
           delegation: new Delegation(
             signedDelegation.delegation.pubkey.buffer,
             signedDelegation.delegation.expiration,
-            signedDelegation.delegation.targets && signedDelegation.delegation.targets.length > 0
-              ? signedDelegation.delegation.targets?.map(t => Principal.fromText(t))
-              : undefined,
+            targets,
           ),
           signature: signedDelegation.signature.buffer as Signature,
         };
@@ -147,13 +155,20 @@ export class AuthClient {
       this._wallet = (message as MeAuthResponseSuccess)['wallet'];
     } else {
       const iiDelegations = (message as DelegationResult).delegations.map(signedDelegation => {
+        const targets =
+          signedDelegation.delegation.targets && signedDelegation.delegation.targets.length > 0
+            ? signedDelegation.delegation.targets?.map(t => Principal.fromText(t))
+            : undefined;
+        if (targets) {
+          this._delegationTargets = [
+            ...new Set(this._delegationTargets.concat(targets.map(e => e.toText()))),
+          ];
+        }
         return {
           delegation: new Delegation(
             signedDelegation.delegation.pubkey.buffer,
             signedDelegation.delegation.expiration,
-            signedDelegation.delegation.targets && signedDelegation.delegation.targets.length > 0
-              ? signedDelegation.delegation.targets?.map(t => Principal.fromText(t))
-              : undefined,
+            targets,
           ),
           signature: signedDelegation.signature.buffer as Signature,
         };
@@ -196,6 +211,10 @@ export class AuthClient {
 
   public setWallet(data: string): void {
     this._wallet = data;
+  }
+
+  public getDelegateTargets(): string[] {
+    return this._delegationTargets;
   }
 
   public async isAuthenticated(): Promise<boolean> {
