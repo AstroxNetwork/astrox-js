@@ -132,7 +132,7 @@ export class AuthClient {
             signedDelegation.delegation.expiration,
             signedDelegation.delegation.targets && signedDelegation.delegation.targets.length > 0
               ? signedDelegation.delegation.targets?.map(t => Principal.fromText(t))
-              : [],
+              : undefined,
           ),
           signature: signedDelegation.signature.buffer as Signature,
         };
@@ -153,7 +153,7 @@ export class AuthClient {
             signedDelegation.delegation.expiration,
             signedDelegation.delegation.targets && signedDelegation.delegation.targets.length > 0
               ? signedDelegation.delegation.targets?.map(t => Principal.fromText(t))
-              : [],
+              : undefined,
           ),
           signature: signedDelegation.signature.buffer as Signature,
         };
