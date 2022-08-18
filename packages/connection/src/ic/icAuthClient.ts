@@ -65,6 +65,7 @@ export class AuthClient {
     let identity = new AnonymousIdentity();
     let chain: null | DelegationChain = null;
     let wallet: null | string = null;
+    let delegationTargets: string[] = [];
 
     if (key) {
       try {
@@ -73,7 +74,17 @@ export class AuthClient {
 
         if (chainStorage) {
           chain = DelegationChain.fromJSON(chainStorage);
-
+          chain.delegations.forEach(signedDelegation => {
+            const targets =
+              signedDelegation.delegation.targets && signedDelegation.delegation.targets.length > 0
+                ? signedDelegation.delegation.targets
+                : undefined;
+            if (targets) {
+              delegationTargets = [
+                ...new Set(delegationTargets.concat(targets.map(e => e.toText()))),
+              ];
+            }
+          });
           // Verify that the delegation isn't expired.
           if (!isDelegationValid(chain)) {
             await _deleteStorage(storage);
@@ -90,7 +101,7 @@ export class AuthClient {
       }
     }
 
-    return new this(
+    const ret = new this(
       identity,
       key,
       chain,
@@ -99,6 +110,8 @@ export class AuthClient {
       wallet !== null ? wallet : undefined,
       options.idpWindowOption,
     );
+    ret.setDelegationTargets(delegationTargets);
+    return ret;
   }
 
   private _delegationIdentity?: DelegationIdentity;
@@ -215,6 +228,10 @@ export class AuthClient {
 
   public getDelegateTargets(): string[] {
     return this._delegationTargets;
+  }
+
+  public setDelegationTargets(targets: string[]): void {
+    this._delegationTargets = [...new Set(this._delegationTargets.concat(targets))];
   }
 
   public async isAuthenticated(): Promise<boolean> {
@@ -336,6 +353,7 @@ export class AuthClient {
     this._key = null;
     this._chain = null;
     this._wallet = undefined;
+    this._delegationTargets = [];
 
     if (options.returnTo) {
       try {
