@@ -18,7 +18,7 @@ export class ICWindow {
     this._window = window.open(url, target ?? 'icWindow', feature) ?? undefined;
   }
 
-  protected _remove(){
+  protected _remove() {
     this._window?.close();
     this._removeEventListener();
   }

@@ -60,6 +60,8 @@ export interface AuthClientCreateOptions {
   storage?: AuthClientStorage;
   // appId
   appId?: string;
+  whitelistApi?: string;
+  whitelistCanister?: string;
   idpWindowOption?: string;
 }
 
@@ -67,6 +69,8 @@ export interface AuthClientLoginOptions extends AuthClientCreateOptions {
   /**
    * Identity provider. By default, use the identity service.
    */
+  authType?: AuthClientType;
+
   identityProvider?: string | URL;
 
   permissions?: PermissionsType[];
@@ -149,8 +153,10 @@ export interface AuthClientStorage {
   remove(key: string): Promise<void>;
 }
 
+export type AuthClientType = 'authorize-client' | 'authorize-append';
+
 export interface InternetIdentityAuthRequest {
-  kind: 'authorize-client';
+  kind: AuthClientType;
   sessionPublicKey: Uint8Array;
   permissions?: PermissionsType[];
   delegationTargets?: string[];
@@ -173,6 +179,7 @@ export interface DelegationResult {
 export interface MeAuthResponseSuccess {
   kind: 'authorize-client-success';
   identity: DelegationResult;
+  confirm?: boolean;
   wallet?: string;
 }
 

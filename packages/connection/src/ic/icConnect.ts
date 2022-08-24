@@ -58,7 +58,7 @@ export class IC extends ICWindow {
     this.injectWindow();
   }
 
-  public static async create(config: any) {
+  public static async create(config: any): Promise<IC> {
     const authClient = await AuthClient.create({
       ...config,
       idpWindowOption: config.useFrame === true ? FRAME_SETTING : undefined,
@@ -193,11 +193,42 @@ export class IC extends ICWindow {
     }
   }
 
+  private async _appendAuth(canisterId: string): Promise<IC> {
+    const currentTargets = this.#authClient.getDelegateTargets();
+    if (currentTargets.findIndex(t => t === canisterId) > 0) {
+      return this;
+    } else {
+      const newTargets = [...currentTargets, canisterId];
+      await new Promise((resolve, reject) => {
+        this.getAuthClient().login({
+          authType: 'authorize-append',
+          delegationTargets: newTargets,
+          // onSuccess: async () => {
+          //   await this.handleAuthenticated({
+          //     ledgerCanisterId: connectOptions.ledgerCanisterId,
+          //     ledgerHost: connectOptions.ledgerHost ?? 'https://boundary.ic0.app/',
+          //   });
+          //   (await connectOptions?.onSuccess?.()) ?? (await connectOptions?.onAuthenticated?.(this));
+          //   resolve(undefined);
+          // },
+          // onError: this.handleError,
+        });
+      });
+      return this;
+    }
+  }
+
   public handleError(error?: string): void {
     throw new Error(error);
   }
 
-  public createActor = <T>(idlFactory: InterfaceFactory, canisterId: string): ActorSubclass<T> => {
+  public createActor = async <T>(
+    idlFactory: InterfaceFactory,
+    canisterId: string,
+  ): Promise<ActorSubclass<T>> => {
+    if (this.#authClient.getConfirm() === true) {
+      await this._appendAuth(canisterId);
+    }
     return Actor.createActor<T>(idlFactory, {
       agent: this.#agent,
       canisterId,

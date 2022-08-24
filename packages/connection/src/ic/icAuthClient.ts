@@ -116,6 +116,8 @@ export class AuthClient {
 
   private _delegationIdentity?: DelegationIdentity;
   private _delegationTargets: string[] = [];
+  private _lastRequest?: InternetIdentityAuthRequest;
+  private _confirm?: boolean;
 
   protected constructor(
     private _identity: Identity,
@@ -166,6 +168,7 @@ export class AuthClient {
       );
       this._chain = idDelegationChain;
       this._wallet = (message as MeAuthResponseSuccess)['wallet'];
+      this._confirm = (message as MeAuthResponseSuccess)['confirm'];
     } else {
       const iiDelegations = (message as DelegationResult).delegations.map(signedDelegation => {
         const targets =
@@ -210,6 +213,10 @@ export class AuthClient {
     return this._identity;
   }
 
+  public getLastRequest(): InternetIdentityAuthRequest | undefined {
+    return this._lastRequest;
+  }
+
   public getDelegationIdentity(): DelegationIdentity | undefined {
     return this._delegationIdentity;
   }
@@ -218,8 +225,15 @@ export class AuthClient {
     return this._key;
   }
 
+  public getDelegationChain(): DelegationChain | null {
+    return this._chain;
+  }
+
   public get wallet(): string | undefined {
     return this._wallet;
+  }
+  public getConfirm(): boolean | undefined {
+    return this._confirm;
   }
 
   public setWallet(data: string): void {
@@ -286,14 +300,23 @@ export class AuthClient {
       switch (message.kind) {
         case 'authorize-ready': {
           // IDP is ready. Send a message to request authorization.
-          const request: InternetIdentityAuthRequest = {
-            kind: 'authorize-client',
-            sessionPublicKey: new Uint8Array(this._key?.getPublicKey().toDer()!),
-            maxTimeToLive: options?.maxTimeToLive,
-            permissions: options?.permissions ?? [PermissionsType.identity],
-            delegationTargets: options?.delegationTargets ?? [],
-            appId: this._appId,
-          };
+          const request: InternetIdentityAuthRequest =
+            options?.authType !== 'authorize-append' && this._lastRequest === undefined
+              ? {
+                  kind: 'authorize-client',
+                  sessionPublicKey: new Uint8Array(this._key?.getPublicKey().toDer()!),
+                  maxTimeToLive: options?.maxTimeToLive,
+                  permissions: options?.permissions ?? [PermissionsType.identity],
+                  delegationTargets: options?.delegationTargets ?? [],
+                  appId: this._appId,
+                }
+              : {
+                  ...this._lastRequest,
+                  delegationTargets: options?.delegationTargets ?? [],
+                  sessionPublicKey: new Uint8Array(this._key?.getPublicKey().toDer()!),
+                  kind: 'authorize-append',
+                };
+          this._lastRequest = request;
           this._idpWindow?.postMessage(request, identityProviderUrl.origin);
           break;
         }
