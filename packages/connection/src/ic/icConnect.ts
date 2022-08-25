@@ -38,6 +38,14 @@ declare global {
   }
 }
 
+export interface LoginOptions {
+  identityProvider: string | URL;
+  // Maximum authorization expiration is 8 days
+  maxTimeToLive: bigint;
+  permissions: PermissionsType[];
+  delegationTargets: string[] | undefined;
+}
+
 const FRAME_SETTING =
   'height=600, width=800, top=0, right=0, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no';
 const FRAME_SETTING_PAYMENT =
@@ -50,6 +58,8 @@ export class IC extends ICWindow {
   #walletProvider?: string;
   #signerProvider?: string;
   #useFrame? = false; // a local ledger to query balance only
+  #loginOption?: LoginOptions;
+  #connectOptions?: ConnectOptions;
 
   protected constructor(authClient: AuthClient, agent: HttpAgent) {
     super();
@@ -89,14 +99,17 @@ export class IC extends ICWindow {
 
   public async connect(connectOptions: ConnectOptions): Promise<IC> {
     const provider = connectOptions?.identityProvider ?? IDENTITY_PROVIDER_DEFAULT;
-
+    this.#connectOptions = connectOptions;
     await new Promise((resolve, reject) => {
-      this.getAuthClient().login({
+      this.#loginOption = {
         identityProvider: provider,
         // Maximum authorization expiration is 8 days
         maxTimeToLive: connectOptions?.maxTimeToLive ?? days * hours * nanoseconds,
         permissions: connectOptions?.permissions ?? [PermissionsType.identity],
         delegationTargets: connectOptions?.delegationTargets,
+      };
+      this.getAuthClient().login({
+        ...this.#loginOption,
         onSuccess: async () => {
           await this.handleAuthenticated({
             ledgerCanisterId: connectOptions.ledgerCanisterId,
@@ -201,17 +214,19 @@ export class IC extends ICWindow {
       const newTargets = [...currentTargets, canisterId];
       await new Promise((resolve, reject) => {
         this.getAuthClient().login({
+          ...this.#loginOption,
           authType: 'authorize-append',
           delegationTargets: newTargets,
-          // onSuccess: async () => {
-          //   await this.handleAuthenticated({
-          //     ledgerCanisterId: connectOptions.ledgerCanisterId,
-          //     ledgerHost: connectOptions.ledgerHost ?? 'https://boundary.ic0.app/',
-          //   });
-          //   (await connectOptions?.onSuccess?.()) ?? (await connectOptions?.onAuthenticated?.(this));
-          //   resolve(undefined);
-          // },
-          // onError: this.handleError,
+          onSuccess: async () => {
+            await this.handleAuthenticated({
+              ledgerCanisterId: this.#connectOptions?.ledgerCanisterId,
+              ledgerHost: this.#connectOptions?.ledgerHost ?? 'https://boundary.ic0.app/',
+            });
+            (await this.#connectOptions?.onSuccess?.()) ??
+              (await this.#connectOptions?.onAuthenticated?.(this));
+            resolve(undefined);
+          },
+          onError: this.handleError,
         });
       });
       return this;

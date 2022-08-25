@@ -92,10 +92,11 @@ exports.default = ({ IDL }) => {
         stats: IDL.Func([], [InternetIdentityStats], ['query']),
     });
 };
-exports.init = ({ IDL }) => {
+const init = ({ IDL }) => {
     const InternetIdentityInit = IDL.Record({
         assigned_user_number_range: IDL.Tuple(IDL.Nat64, IDL.Nat64),
     });
     return [IDL.Opt(InternetIdentityInit)];
 };
+exports.init = init;
 //# sourceMappingURL=internet_identity_idl.js.map

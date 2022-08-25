@@ -59,7 +59,7 @@ exports.default = ({ IDL }) => {
         send_dfx: IDL.Func([SendArgs], [BlockHeight], []),
     });
 };
-exports.init = ({ IDL }) => {
+const init = ({ IDL }) => {
     const AccountIdentifier = IDL.Text;
     const Duration = IDL.Record({ secs: IDL.Nat64, nanos: IDL.Nat32 });
     const ArchiveOptions = IDL.Record({
@@ -78,4 +78,5 @@ exports.init = ({ IDL }) => {
     });
     return [LedgerCanisterInitPayload];
 };
+exports.init = init;
 //# sourceMappingURL=ledger.idl.js.map
