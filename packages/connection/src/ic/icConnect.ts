@@ -208,7 +208,7 @@ export class IC extends ICWindow {
 
   private async _appendAuth(canisterId: string): Promise<IC> {
     const currentTargets = this.#authClient.getDelegateTargets();
-    if (currentTargets.findIndex(t => t === canisterId) > 0) {
+    if (currentTargets.includes(canisterId)) {
       return this;
     } else {
       const newTargets = [...currentTargets, canisterId];
