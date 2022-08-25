@@ -1,6 +1,6 @@
 {
 	"name": "@astrox/identity",
-	"version": "0.0.49",
+	"version": "0.0.50",
 	"author": "DFINITY Stiftung <sdk@astrox.org>",
 	"license": "Apache-2.0",
 	"description": "JavaScript and TypeScript library to manage identity with the Internet Computer",
