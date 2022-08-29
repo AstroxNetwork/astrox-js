@@ -46,6 +46,17 @@ export interface SendOpts {
   created_at_time?: Date;
 }
 
+
+export interface SendData {
+  amount?: number;
+  from: string;
+  to: string;
+  tokenIndex?: number;
+  canisterId?: string;
+  tokenIdentifier?: string;
+  standard?: string;
+}
+
 /**
  * List of options for creating an {@link AuthClient}.
  */
@@ -108,8 +119,9 @@ export interface TransactionOptions {
    */
   walletProvider?: string | URL;
   from?: AccountIdentifier;
-  to: AccountIdentifier;
-  amount: bigint;
+  to?: AccountIdentifier;
+  amount?: bigint;
+  sendData: SendData,
   sendOpts: SendOpts;
   maxTimeout?: number;
   successTimeout?: number;

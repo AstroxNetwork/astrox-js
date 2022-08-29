@@ -356,9 +356,12 @@ export class IC extends ICWindow {
           // IDP is ready. Send a message to request authorization.
           const request: { kind: TransactionMessageKind } & TransactionOptions = {
             kind: TransactionMessageKind.client,
-            from: options.from ?? this.wallet,
             to: options.to,
+            from: options.from ?? this.wallet,
             amount: options.amount,
+            sendData: {
+              ...options.sendData,
+            },
             sendOpts: options.sendOpts,
             maxTimeout: options.maxTimeout ?? 90,
             successTimeout: options.successTimeout ?? 10,
