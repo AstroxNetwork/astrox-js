@@ -54,7 +54,8 @@ export interface SendData {
   tokenIndex?: number;
   canisterId?: string;
   tokenIdentifier?: string;
-  standard: string;
+  standard?: string;
+  symbol?: string;
 }
 
 /**
