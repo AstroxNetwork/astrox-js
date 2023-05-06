@@ -336,7 +336,7 @@ export class AuthClient {
               );
             }
             if (this._wallet !== undefined) {
-              await this._storage.set(KEY_ICSTORAGE_WALLET, this._wallet);
+              await this._storage.set(KEY_ICSTORAGE_WALLET, JSON.stringify(this._wallet));
             }
           } catch (err) {
             reject(this._handleFailure((err as Error).message, options?.onError));
